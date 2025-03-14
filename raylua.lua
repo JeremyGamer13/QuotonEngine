@@ -1,4 +1,4 @@
--- for stuff like RayLib.Rectangle that raylib-lua does differently
+-- for stuff like RayLib.Rectangle that raylib-lua does differently from raylua
 local module = {}
 
 module.Rectangle = function(x, y, width, height)
