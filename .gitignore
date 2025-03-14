@@ -1,0 +1,13 @@
+build/*
+temp/*
+
+# Runtime
+sav/*
+
+.dev/*
+.vscode/*
+
+# raylib-lua exe files
+raylua_s.exe
+raylua_e.exe
+raylua_r.exe
