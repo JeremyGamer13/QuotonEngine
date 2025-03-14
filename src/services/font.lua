@@ -43,17 +43,24 @@ function module:GetStyle(font, style)
     return self.Mapping[style][name] or font
 end
 
-function module:Load()
-    -- we use make folder incase it doesnt exist
-    local folder = FileService:MakeFolder("./assets/fonts/")
-    folder:Open()
+function module:IsFontPathSupported(path)
+    -- https://github.com/raysan5/raylib/blob/master/FAQ.md#what-file-formats-are-supported-by-raylib
+    local supportedFonts = {"ttf", "otf", "fnt"}
+    for _, fontType in ipairs(supportedFonts) do
+        if libset.string.endsWith(path, fontType) then
+            return true
+        end
+    end
+    return false
+end
 
+function module:Load(fontList)
     local loadResolution = SetupService.initialConfig.fontResolution
-    for _, fontPath in ipairs(folder.Children) do
-        if not libset.string.endsWith(fontPath, ".ttf") then goto continue end
+    for _, fontPath in ipairs(fontList) do
+        if not module:IsFontPathSupported(fontPath) then goto continue end
 
         local fileName = FileService:PathToFileName(fontPath)
-        local cleanFileName = fileName:gsub("%.ttf$", "")
+        local cleanFileName = fileName:gsub("%.%w+$", "")
         local fontName = cleanFileName:match("^[^-]+")
 
         local loadedFont = RayLib.LoadFontEx(fontPath, loadResolution, nil, 0)
@@ -76,9 +83,9 @@ function module:Load()
 
         ::continue::
     end
-
-    folder:Unload()
 end
+
+---@private
 function module:Unload()
     print("unloading fonts")
     for _, font in pairs(self.Fonts) do

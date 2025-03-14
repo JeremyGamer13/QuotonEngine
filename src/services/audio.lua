@@ -5,10 +5,10 @@ local RayLib = require("raylib")
 local libset = require("src.modules.libset")
 
 local module = {
-    _audio = {},
+    forceCompatibility = false,
 
-    -- Right now, none of the other sound types work stable enough to disable this.
-    ForceCompatibility = true
+    ---@private
+    _audio = {},
 }
 module.Enums = {
     AudioType = {
@@ -95,7 +95,7 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
     local Audio = {}
 
     -- Music streams have a lot of stuttering problems at low FPS, even if they allow for some nice options.
-    if module.ForceCompatibility then
+    if module.forceCompatibility and type == module.Enums.AudioType.MUSIC then
         type = module.Enums.AudioType.SOUND
     end
 
@@ -322,11 +322,16 @@ function module:NewGroup(optName)
     return audioGroup
 end
 
-function module:Unload()
-    print("unloading audio")
+function module:UnloadAudio()
+    print("Unloading Audio")
     for _, audio in pairs(self._audio) do
         audio:Unload()
     end
+end
+
+---@private
+function module:Unload()
+    module:UnloadAudio()
 end
 
 return module

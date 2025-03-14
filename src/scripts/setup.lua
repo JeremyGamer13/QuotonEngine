@@ -27,11 +27,24 @@ function module:InitializingPreProgram()
     SetupService:SetGameScripts(gameScripts)
 
     local defaultConfig = {
+        -- Volume level for all audio in the game.
+        audioVolume = 0.5,
+
         -- If true, will remove the ESC key closing the game.
         disableKeyExit = true,
 
         -- Uses the system clock to scramble Lua's math.random calls. Recommended if using the native math.random function.
         enableRandomRNG = true,
+
+        --[[
+            Forces all audio created with the MUSIC type to be created as a SOUND.
+            May break some behavior if using functions only in MUSIC audio types.
+            Right now, none of the other sound types work stable enough to disable this.
+        ]]
+        enableCompatibleAudio = true,
+
+        -- Sets the available fonts that can be used in-game. Should be a path to the fonts.
+        fontList = {"assets/fonts/NotoSans.ttf"},
 
         -- Sets the default primary font used by FontService. Can be changed later if neccessary.
         fontPrimary = "NotoSans",
@@ -41,9 +54,6 @@ function module:InitializingPreProgram()
 
         -- Target FPS the game will try to run at.
         frameRateMax = 60,
-
-        -- Volume level of the game.
-        masterVolume = 0.5,
 
         --[[
             On certain platforms, Quoton games will open with a terminal attached.

@@ -24,8 +24,6 @@ function module:Wait(seconds, func)
 end
 
 -- used for the Wait function
--- kinda bad if we are on low FPS
--- but we likely couldnt accurately run at the time anyways if we were on low fps
 RuntimeService.OnStep:Connect(function()
     local time = RayLib.GetTime()
     for _, id in pairs(waitingFunctionIds) do
@@ -38,7 +36,7 @@ RuntimeService.OnStep:Connect(function()
             end
             waitingFunctions[id] = nil
             -- run function since its been long enough
-            module.Run(pack.callback)
+            module:Run(pack.callback)
         end
     end
 end)

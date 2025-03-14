@@ -1,4 +1,5 @@
 -- TransmitterService is used if 2 scripts need to talk to each other
+-- TODO: Remake this using the event service.
 local module = {}
 
 local _listeners = {}

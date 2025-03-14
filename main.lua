@@ -66,11 +66,12 @@ end
 
 -- setup audio
 RayLib.InitAudioDevice()
-AudioService:SetMasterVolume(SetupConfig.masterVolume)
+AudioService.forceCompatibility = SetupConfig.enableCompatibleAudio
+AudioService:SetMasterVolume(SetupConfig.audioVolume)
 
 -- load fonts & allow input service to begin
 FontService.PrimaryFont = SetupConfig.fontPrimary
-FontService:Load()
+FontService:Load(SetupConfig.fontList)
 
 InputService.ready = true
 
