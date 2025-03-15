@@ -1,25 +1,25 @@
 -- TransmitterService is used if 2 scripts need to talk to each other
--- TODO: Remake this using the event service.
-local module = {}
+local EventService = require("src.services.event")
 
-local _listeners = {}
-module.ListenFor = function(type, callback)
-    -- if this callback type doesnt exist yet, create it
-    if not _listeners[type] then
-        _listeners[type] = {}
-    end
-    -- add callback
-    table.insert(_listeners[type], callback)
+local module = {
+    ---@private
+    _eventNames = {}
+}
+
+function module:GetEvent(type)
+    if module._eventNames[type] then return module._eventNames[type] end
+    local event = EventService:CreateEvent("TransmitterEvent" .. type)
+    module._eventNames[type] = event
+    return event
 end
-module.FireListeners = function(type, data)
-    -- if this callback type doesnt exist yet, no events are attached
-    -- so just return
-    if not _listeners[type] then return false end
-    -- fire listeners
-    for _, listener in pairs(_listeners[type]) do
-        listener(data)
-    end
-    return true
+
+function module:ListenFor(type, callback)
+    local event = module:GetEvent(type)
+    event:Connect(callback)
+end
+function module:Transmit(type, ...)
+    local event = module:GetEvent(type)
+    event:Emit(...)
 end
 
 return module

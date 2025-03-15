@@ -97,7 +97,7 @@ if SetupConfig.terminalShowIgnoreMessages then
 end
 
 local ForceWindowClose = false
-TransmitterService.ListenFor("PROCESS_EXIT", function()
+TransmitterService:ListenFor("PROCESS_EXIT", function()
     ForceWindowClose = true
 end)
 while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
