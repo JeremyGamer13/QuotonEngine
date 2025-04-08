@@ -25,9 +25,12 @@ module.RenderSettings = {
     ScreenTint = RayLib.WHITE,
     ScreenFilter = RayLib.TEXTURE_FILTER_TRILINEAR,
 }
+
+---@private
 module._flags = {
     shouldReloadRenTexture = false,
 }
+---@private
 module._state = {
     texture = nil,
     font = nil,

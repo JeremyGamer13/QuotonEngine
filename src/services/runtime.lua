@@ -1,11 +1,9 @@
 local EventService = require("src.services.event")
 
 local RayLib = require("raylib")
-
 local libset = require("src.modules.libset")
 
 local module = {
-    LoadingScreen = nil,
     RandomInitializeData = {
         final = 0,
         amount = 0
@@ -14,6 +12,7 @@ local module = {
     MaxFrameRate = 60, -- this can change with no issues
     RuntimeFrameRate = 60, -- this should NOT change and will cause issues if changed
 
+    ---@private
     _flags = {
         newMaxFps = 60,
         shouldUpdateMaxFps = false,

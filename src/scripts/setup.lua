@@ -12,7 +12,8 @@ local module = {}
 -- Returns an array of require()'d scripts. Will be sent to the setup service.
 function module:ImportGameScripts()
     return {
-        require("src.scripts.test")
+        require("src.scripts.test"),
+        require("src.scripts.image"),
     }
 end
 

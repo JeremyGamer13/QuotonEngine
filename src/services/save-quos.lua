@@ -1,6 +1,7 @@
-local getChecksum = require("src.modules.crc32")
 local libset = require("src.modules.libset")
+local getChecksum = require("src.modules.crc32")
 
+-- Lua implementation of the .quos (Quoton Save) format
 local module = {}
 
 module.SyntaxConfig = {

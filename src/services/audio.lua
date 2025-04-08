@@ -5,6 +5,7 @@ local RayLib = require("raylib")
 local libset = require("src.modules.libset")
 
 local module = {
+    -- Setup script should set this to true if needed
     forceCompatibility = false,
 
     ---@private
@@ -15,7 +16,7 @@ module.Enums = {
         -- Best compatibility with all systems.
         SOUND = "sound",
 
-        -- Intended RayLib Music API but may cause unexpected crashes and stuttering with certain audio files or certain platforms.
+        ---@deprecated Intended RayLib Music API but may cause unexpected crashes and stuttering with certain audio files or certain platforms. DO NOT USE THIS AUDIO TYPE IN FULL PROJECTS.
         MUSIC = "music",
 
         ---@deprecated Not fully implemented at this time. DO NOT USE THIS AUDIO TYPE IN FULL PROJECTS.

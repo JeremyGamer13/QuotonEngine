@@ -41,6 +41,8 @@ local function CreateEventObject(optName)
     ---@class Event
     local Event = {
         Name = optName or "",
+
+        ---@private
         _listeners = {},
     }
 

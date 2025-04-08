@@ -1,7 +1,9 @@
 local module = {}
 module.initialConfig = {}
 
+---@private
 module._scripts = {}
+---@private
 module._listeners = {}
 
 function module:SetGameScripts(gameScripts)

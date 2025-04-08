@@ -15,7 +15,7 @@ end
 local audio
 function script:StartTick()
     print("game running, will attempt to load audio and play...")
-    audio = AudioService:New("assets/audio/test.mp3", AudioService.Enums.AudioType.MUSIC)
+    audio = AudioService:New("assets/audio/test.mp3", AudioService.Enums.AudioType.SOUND)
 end
 
 local stage = 0
