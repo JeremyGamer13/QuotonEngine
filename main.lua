@@ -9,6 +9,7 @@ local FileService = require("src.services.file")
 
 local RayLib = require("raylib")
 local RayLua = require("raylua")
+local Enum = require("src.modules.enum")
 
 -- This is one of the only times a user script is loaded outside of user code.
 -- The user can run their own functions to run when the game is starting up.
@@ -109,7 +110,7 @@ while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
         width = windowSize.width,
         height = windowSize.height
     }
-    if RenderingService.RenderSettings.FillMode == RenderingService.Enum.CROP then
+    if RenderingService.RenderSettings.FillMode == Enum.FillMode.Crop then
         local ratioX = windowSize.width / RenderingService.RenderSettings.ResolutionX
         local ratioY = windowSize.height / RenderingService.RenderSettings.ResolutionY
         local scale = math.max(ratioX, ratioY)
@@ -118,7 +119,7 @@ while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
         renderDestination.height = RenderingService.RenderSettings.ResolutionY * scale
         renderDestination.x = (windowSize.width - renderDestination.width) / 2
         renderDestination.y = (windowSize.height - renderDestination.height) / 2
-    elseif RenderingService.RenderSettings.FillMode == RenderingService.Enum.FIT then
+    elseif RenderingService.RenderSettings.FillMode == Enum.FillMode.Fit then
         local ratioX = windowSize.width / RenderingService.RenderSettings.ResolutionX
         local ratioY = windowSize.height / (RenderingService.RenderSettings.ResolutionY)
         local scale = math.min(ratioX, ratioY)

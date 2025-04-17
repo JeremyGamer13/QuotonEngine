@@ -1,25 +1,14 @@
 local RayLib = require("raylib")
 local RayLua = require("raylua")
+local Enum = require("src.modules.enum")
 
 local module = {}
-
-module.Enum = {
-    CROP = "crop",
-    FIT = "fit",
-    STRETCH = "stretch",
-
-    LEFT = "left",
-    RIGHT = "right",
-    TOP = "top",
-    BOTTOM = "bottom",
-    CENTER = "center",
-}
 
 module.RenderSettings = {
     ResolutionX = 1280,
     ResolutionY = 720,
 
-    FillMode = module.Enum.FIT,
+    FillMode = Enum.FillMode.Fit,
     Rotation = 0,
 
     ScreenTint = RayLib.WHITE,

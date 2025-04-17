@@ -6,6 +6,7 @@ local FontService = require("src.services.font")
 
 local RayLib = require("raylib")
 local RayLua = require("raylua")
+local Enum = require("src.modules.enum")
 
 local script = {}
 function script:Initialize()
@@ -15,7 +16,7 @@ end
 local audio
 function script:StartTick()
     print("game running, will attempt to load audio and play...")
-    audio = AudioService:New("assets/audio/test.mp3", AudioService.Enums.AudioType.SOUND)
+    audio = AudioService:New("assets/audio/test.mp3", Enum.AudioType.SOUND)
 end
 
 local stage = 0

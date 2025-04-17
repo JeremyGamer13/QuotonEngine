@@ -3,6 +3,10 @@ local RuntimeService = require("src.services.runtime")
 
 local RayLib = require("raylib")
 local libset = require("src.modules.libset")
+local Enum = require("src.modules.enum")
+
+-- (Temporary)
+---@diagnostic disable: deprecated
 
 local module = {
     -- Setup script should set this to true if needed
@@ -10,18 +14,6 @@ local module = {
 
     ---@private
     _audio = {},
-}
-module.Enums = {
-    AudioType = {
-        -- Best compatibility with all systems.
-        SOUND = "sound",
-
-        ---@deprecated Intended RayLib Music API but may cause unexpected crashes and stuttering with certain audio files or certain platforms. DO NOT USE THIS AUDIO TYPE IN FULL PROJECTS.
-        MUSIC = "music",
-
-        ---@deprecated Not fully implemented at this time. DO NOT USE THIS AUDIO TYPE IN FULL PROJECTS.
-        RAW = "raw",
-    }
 }
 
 function module:SetMasterVolume(volume)
@@ -96,16 +88,16 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
     local Audio = {}
 
     -- Music streams have a lot of stuttering problems at low FPS, even if they allow for some nice options.
-    if module.forceCompatibility and type == module.Enums.AudioType.MUSIC then
-        type = module.Enums.AudioType.SOUND
+    if module.forceCompatibility and type == Enum.AudioType.MUSIC then
+        type = Enum.AudioType.SOUND
     end
 
     Audio.Type = type
-    if type == module.Enums.AudioType.SOUND then
+    if type == Enum.AudioType.SOUND then
         Audio._node = RayLib.LoadSound(filePath)
-    elseif type == module.Enums.AudioType.MUSIC then
+    elseif type == Enum.AudioType.MUSIC then
         Audio._node = RayLib.LoadMusicStream(filePath)
-    elseif type == module.Enums.AudioType.RAW then
+    elseif type == Enum.AudioType.RAW then
         Audio._node = RayLib.LoadAudioStream(rawSampleRate, rawSampleSize, rawChannels)
     end
 
@@ -121,8 +113,8 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
 
     Audio._musicUpdateLoop = nil
 
-    if type == module.Enums.AudioType.MUSIC or type == module.Enums.AudioType.RAW then
-        if type == module.Enums.AudioType.RAW then
+    if type == Enum.AudioType.MUSIC or type == Enum.AudioType.RAW then
+        if type == Enum.AudioType.RAW then
             -- Override this if needed. Should return true if the audio needs to update with RayLib.UpdateAudioStream()
             function Audio:NeedsToUpdate(_) return false end
             -- Override this if needed. Should return data, frameCount or return true if manually updated.
@@ -133,13 +125,13 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
             end
 
             function Audio:IsProcessed()
-                if self.Type ~= module.Enums.AudioType.RAW then
+                if self.Type ~= Enum.AudioType.RAW then
                     return self:IsReady()
-                elseif self.Type == module.Enums.AudioType.RAW then
+                elseif self.Type == Enum.AudioType.RAW then
                     return RayLib.IsAudioStreamProcessed(self._node)
                 end
             end
-        elseif type == module.Enums.AudioType.MUSIC then
+        elseif type == Enum.AudioType.MUSIC then
             function Audio:SeekToSeconds(seconds)
                 RayLib.SeekMusicStream(self._node, seconds)
             end
@@ -153,9 +145,9 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
         end
 
         Audio._musicUpdateLoop = RuntimeService.OnPreStep:Connect(function()
-            if type == module.Enums.AudioType.MUSIC then
+            if type == Enum.AudioType.MUSIC then
                 RayLib.UpdateMusicStream(Audio._node)
-            elseif type == module.Enums.AudioType.RAW and Audio:NeedsToUpdate(Audio._node) then
+            elseif type == Enum.AudioType.RAW and Audio:NeedsToUpdate(Audio._node) then
                 local data, frameCount = Audio:OnDataUpdate(Audio._node)
                 if data ~= true then
                     RayLib.UpdateAudioStream(Audio._node, data, frameCount)
@@ -165,31 +157,31 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
     end
 
     function Audio:IsReady()
-        if self.Type == module.Enums.AudioType.SOUND then
+        if self.Type == Enum.AudioType.SOUND then
             return RayLib.IsSoundReady(self._node)
-        elseif self.Type == module.Enums.AudioType.MUSIC then
+        elseif self.Type == Enum.AudioType.MUSIC then
             return RayLib.IsMusicReady(self._node)
-        elseif self.Type == module.Enums.AudioType.RAW then
+        elseif self.Type == Enum.AudioType.RAW then
             return RayLib.IsAudioStreamReady(self._node)
         end
     end
     function Audio:IsPlaying()
-        if self.Type == module.Enums.AudioType.SOUND then
+        if self.Type == Enum.AudioType.SOUND then
             return RayLib.IsSoundPlaying(self._node)
-        elseif self.Type == module.Enums.AudioType.MUSIC then
+        elseif self.Type == Enum.AudioType.MUSIC then
             return RayLib.IsMusicStreamPlaying(self._node)
-        elseif self.Type == module.Enums.AudioType.RAW then
+        elseif self.Type == Enum.AudioType.RAW then
             return RayLib.IsAudioStreamPlaying(self._node)
         end
     end
 
     ---@private Used to update the volume on the Audio node.
     function Audio:UpdateVolume()
-        if self.Type == module.Enums.AudioType.SOUND then
+        if self.Type == Enum.AudioType.SOUND then
             RayLib.SetSoundVolume(self._node, self._multVolume)
-        elseif self.Type == module.Enums.AudioType.MUSIC then
+        elseif self.Type == Enum.AudioType.MUSIC then
             RayLib.SetMusicVolume(self._node, self._multVolume)
-        elseif self.Type == module.Enums.AudioType.RAW then
+        elseif self.Type == Enum.AudioType.RAW then
             RayLib.SetAudioStreamVolume(self._node, self._multVolume)
         end
     end
@@ -227,42 +219,42 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
     end
 
     function Audio:SetPitch(pitch)
-        if self.Type == module.Enums.AudioType.SOUND then
+        if self.Type == Enum.AudioType.SOUND then
             RayLib.SetSoundPitch(self._node, pitch)
-        elseif self.Type == module.Enums.AudioType.MUSIC then
+        elseif self.Type == Enum.AudioType.MUSIC then
             RayLib.SetMusicPitch(self._node, pitch)
-        elseif self.Type == module.Enums.AudioType.RAW then
+        elseif self.Type == Enum.AudioType.RAW then
             RayLib.SetAudioStreamPitch(self._node, pitch)
         end
     end
 
     function Audio:Play()
-        if self.Type == module.Enums.AudioType.SOUND then
+        if self.Type == Enum.AudioType.SOUND then
             RayLib.PlaySound(self._node)
-        elseif self.Type == module.Enums.AudioType.MUSIC then
+        elseif self.Type == Enum.AudioType.MUSIC then
             RayLib.PlayMusicStream(self._node)
-        elseif self.Type == module.Enums.AudioType.RAW then
+        elseif self.Type == Enum.AudioType.RAW then
             RayLib.PlayAudioStream(self._node)
         end
     end
     function Audio:Stop()
         self.Paused = false
-        if self.Type == module.Enums.AudioType.SOUND then
+        if self.Type == Enum.AudioType.SOUND then
             RayLib.StopSound(self._node)
-        elseif self.Type == module.Enums.AudioType.MUSIC then
+        elseif self.Type == Enum.AudioType.MUSIC then
             RayLib.StopMusicStream(self._node)
-        elseif self.Type == module.Enums.AudioType.RAW then
+        elseif self.Type == Enum.AudioType.RAW then
             RayLib.StopAudioStream(self._node)
         end
     end
 
     function Audio:Pause()
         if self:IsPlaying() then
-            if self.Type == module.Enums.AudioType.SOUND then
+            if self.Type == Enum.AudioType.SOUND then
                 RayLib.PauseSound(self._node)
-            elseif self.Type == module.Enums.AudioType.MUSIC then
+            elseif self.Type == Enum.AudioType.MUSIC then
                 RayLib.PauseMusicStream(self._node)
-            elseif self.Type == module.Enums.AudioType.RAW then
+            elseif self.Type == Enum.AudioType.RAW then
                 RayLib.PauseAudioStream(self._node)
             end
             self.Paused = true
@@ -272,11 +264,11 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
     end
     function Audio:Resume()
         if self.Paused then
-            if self.Type == module.Enums.AudioType.SOUND then
+            if self.Type == Enum.AudioType.SOUND then
                 RayLib.ResumeSound(self._node)
-            elseif self.Type == module.Enums.AudioType.MUSIC then
+            elseif self.Type == Enum.AudioType.MUSIC then
                 RayLib.ResumeMusicStream(self._node)
-            elseif self.Type == module.Enums.AudioType.RAW then
+            elseif self.Type == Enum.AudioType.RAW then
                 RayLib.ResumeAudioStream(self._node)
             end
             self.Paused = false
@@ -290,11 +282,11 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
             self._musicUpdateLoop:Disconnect()
         end
         self:Stop()
-        if self.Type == module.Enums.AudioType.SOUND then
+        if self.Type == Enum.AudioType.SOUND then
             RayLib.UnloadSound(self._node)
-        elseif self.Type == module.Enums.AudioType.MUSIC then
+        elseif self.Type == Enum.AudioType.MUSIC then
             RayLib.UnloadMusicStream(self._node)
-        elseif self.Type == module.Enums.AudioType.RAW then
+        elseif self.Type == Enum.AudioType.RAW then
             RayLib.UnloadAudioStream(self._node)
         end
     end
@@ -310,7 +302,7 @@ end
 function module:NewRaw(sampleRate, sampleSize, channels)
     local audio = CreateAudioObject(
         nil,
-        module.Enums.AudioType.RAW,
+        Enum.AudioType.RAW,
         sampleRate,
         sampleSize,
         channels

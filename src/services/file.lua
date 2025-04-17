@@ -1,16 +1,13 @@
 local RayLib = require("raylib")
 
 local libset = require("src.modules.libset")
+local Enum = require("src.modules.enum")
 local ffi = require("ffi")
 
 local module = {}
 local fileList = {}
 local folderList = {}
 
-module.Enum = {
-    BUFFER = "buffer",
-    TEXT = "text",
-}
 module.MAX_SAFE_FILES = 5
 module.MAX_SAFE_FOLDERS = 3
 
@@ -34,7 +31,7 @@ local function CreatePayloadFileObject(optType, optPath, bufferSize)
     local File = {}
 
     File.Data = nil
-    File.Type = optType or module.Enum.TEXT
+    File.Type = optType or Enum.OpenFileMode.Text
     File.Path = optPath
     File.BufferSize = bufferSize
 
@@ -66,7 +63,7 @@ local function CreatePayloadFileObject(optType, optPath, bufferSize)
         end
 
         local openResult = nil
-        if self.Type == module.Enum.TEXT then
+        if self.Type == Enum.OpenFileMode.Text then
             openResult = RayLib.LoadFileText(self.Path)
             if openResult ~= nil then
                 self.Data = ffi.string(openResult)
@@ -98,7 +95,7 @@ local function CreatePayloadFileObject(optType, optPath, bufferSize)
             return
         end
 
-        if self.Type == module.Enum.TEXT then
+        if self.Type == Enum.OpenFileMode.Text then
             print("INFO: Deloading txt", self.OpenPointer)
             RayLib.UnloadFileText(self.OpenPointer)
         else
@@ -192,7 +189,7 @@ local function CreateDiskFileObject(optType, optPath, bufferSize)
     local File = {}
 
     File.Data = nil
-    File.Type = optType or module.Enum.TEXT
+    File.Type = optType or Enum.OpenFileMode.Text
     File.Path = optPath
     File.BufferSize = bufferSize
 
@@ -224,7 +221,7 @@ local function CreateDiskFileObject(optType, optPath, bufferSize)
         end
 
         local openResult = nil
-        if self.Type == module.Enum.TEXT then
+        if self.Type == Enum.OpenFileMode.Text then
             openResult = RayLib.LoadFileText(self.Path)
             if openResult ~= nil then
                 self.Data = ffi.string(openResult)
@@ -257,7 +254,7 @@ local function CreateDiskFileObject(optType, optPath, bufferSize)
             return
         end
 
-        if self.Type == module.Enum.TEXT then
+        if self.Type == Enum.OpenFileMode.Text then
             local cString = ffi.new("char[?]", #self.Data + 1, self.Data)
             RayLib.SaveFileText(self.Path, cString)
         else
@@ -275,7 +272,7 @@ local function CreateDiskFileObject(optType, optPath, bufferSize)
             return
         end
 
-        if self.Type == module.Enum.TEXT then
+        if self.Type == Enum.OpenFileMode.Text then
             print("INFO: Deloading txt", self.OpenPointer)
             RayLib.UnloadFileText(self.OpenPointer)
         else
@@ -322,13 +319,14 @@ local function CreateDiskFolderObject(optPath)
         end
 
         -- raylib does not provide a method for this
+        -- TODO: this is probably unsafe
         local success
-        if package.config:sub(1, 1) == '\\' then
+        if package.config:sub(1, 1) == "\\" then
             -- Windows
-            success = os.execute('mkdir "' .. self.Path .. '"')
+            success = os.execute("mkdir \"" .. self.Path .. "\"")
         else
             -- Unix-based systems (Linux, MacOS)
-            success = os.execute('mkdir -p "' .. self.Path .. '"')
+            success = os.execute("mkdir -p \"" .. self.Path .. "\"")
         end
 
         if not success then
