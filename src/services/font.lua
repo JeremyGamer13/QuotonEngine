@@ -3,6 +3,7 @@ local SetupService = require("src.services.setup")
 
 local RayLib = require("raylib")
 local libset = require("src.modules.libset")
+local Enum = require("src.modules.enum")
 
 local module = {
     Fonts = {},
@@ -55,7 +56,7 @@ function module:IsFontPathSupported(path)
 end
 
 function module:Load(fontList)
-    local loadResolution = SetupService.initialConfig.fontResolution
+    local loadResolution = SetupService.InitialConfig.FontResolution
     for _, fontPath in ipairs(fontList) do
         if not module:IsFontPathSupported(fontPath) then goto continue end
 
@@ -64,7 +65,7 @@ function module:Load(fontList)
         local fontName = cleanFileName:match("^[^-]+")
 
         local loadedFont = RayLib.LoadFontEx(fontPath, loadResolution, nil, 0)
-        RayLib.SetTextureFilter(loadedFont.texture, RayLib.TEXTURE_FILTER_TRILINEAR)
+        RayLib.SetTextureFilter(loadedFont.texture, SetupService.InitialConfig.FontFilterMode)
 
         self.Mapping.names[loadedFont] = fontName
         if not string.find(cleanFileName, "-", 1, true) then

@@ -15,41 +15,41 @@ local Enum = require("src.modules.enum")
 -- The user can run their own functions to run when the game is starting up.
 local ScriptSetup = require("src.scripts.setup")
 local SetupConfig = ScriptSetup:InitializingPreProgram()
-SetupService.initialConfig = SetupConfig
+SetupService.InitialConfig = SetupConfig
 
 -- create window
-RayLib.SetConfigFlags(SetupConfig.windowConfigFlags)
+RayLib.SetConfigFlags(SetupConfig.WindowConfigFlags)
 RayLib.InitWindow(
     RenderingService.RenderSettings.ResolutionX,
     RenderingService.RenderSettings.ResolutionY,
-    SetupConfig.windowTitle
+    SetupConfig.WindowTitle
 )
-RayLib.SetTargetFPS(SetupConfig.frameRateMax)
-if SetupConfig.disableKeyExit then
+RayLib.SetTargetFPS(SetupConfig.FrameRateMax)
+if SetupConfig.DisableKeyExit then
     RayLib.SetExitKey(RayLib.KEY_NULL)
 end
 
-if SetupConfig.windowScreenResize then
+if SetupConfig.WindowScreenResize then
     local screenResolution = RenderingService:GetScreenResolution()
-    local appropriateWindowRes = RenderingService:GetAppropriateResolution(not SetupConfig.windowScreenResizeFill)
+    local appropriateWindowRes = RenderingService:GetAppropriateResolution(not SetupConfig.WindowScreenResizeFill)
     RayLib.SetWindowSize(appropriateWindowRes.width, appropriateWindowRes.height)
     RayLib.SetWindowPosition(
         (screenResolution.width / 2) - (appropriateWindowRes.width / 2),
         (screenResolution.height / 2) - (appropriateWindowRes.height / 2)
     )
 
-    if SetupConfig.windowScreenResizeResolution then
+    if SetupConfig.WindowScreenResizeResolution then
         local appropriateRes = RenderingService:GetAppropriateResolution()
         RenderingService:SetResolution(appropriateRes.width, appropriateRes.height)
     end
 end
-if SetupConfig.windowMaximize then
+if SetupConfig.WindowMaximize then
     RayLib.MaximizeWindow()
 end
 
 -- this makes math.random a bit better at being random
 -- also introduces the silly thing of RNG manipulation!
-if SetupConfig.enableRandomRNG then
+if SetupConfig.EnableRandomRNG then
     print("Creating random numbers...")
 
     local randomRepeats = math.ceil((os.time() % 500) + (os.clock() % 500))
@@ -67,14 +67,14 @@ end
 
 -- setup audio
 RayLib.InitAudioDevice()
-AudioService.forceCompatibility = SetupConfig.enableCompatibleAudio
-AudioService:SetMasterVolume(SetupConfig.audioVolume)
+AudioService.forceCompatibility = SetupConfig.EnableCompatibleAudio
+AudioService:SetMasterVolume(SetupConfig.AudioVolume)
 
 -- load fonts & allow input service to begin
-FontService.PrimaryFont = SetupConfig.fontPrimary
-FontService:Load(SetupConfig.fontList)
+FontService.PrimaryFont = SetupConfig.FontPrimary
+FontService:Load(SetupConfig.FontList)
 
-InputService.ready = true
+InputService._ready = true
 
 local RenderTexture = RayLib.LoadRenderTexture(
     RenderingService.RenderSettings.ResolutionX,
@@ -87,7 +87,7 @@ RenderingService._target = RenderTexture
 SetupService:Initialize()
 SetupService:StartTick()
 
-if SetupConfig.terminalShowIgnoreMessages then
+if SetupConfig.TerminalShowIgnoreMessages then
     print("")
     print("-----")
     print("On certain platforms, this terminal / window will appear while you play this game.")

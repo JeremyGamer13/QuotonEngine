@@ -2,6 +2,7 @@
 -- Also make sure that all functions originally here return the same expected values.
 local RayLib = require("raylib")
 local RayLua = require("raylua")
+local Enum = require("src.modules.enum")
 local bit = require("bit")
 
 local SetupService = require("src.services.setup")
@@ -28,62 +29,65 @@ function module:InitializingPreProgram()
 
     local defaultConfig = {
         -- Volume level for all audio in the game.
-        audioVolume = 0.5,
+        AudioVolume = 0.5,
 
         -- If true, will remove the ESC key closing the game.
-        disableKeyExit = true,
+        DisableKeyExit = true,
 
         -- Uses the system clock to scramble Lua's math.random calls. Recommended if using the native math.random function.
-        enableRandomRNG = true,
+        EnableRandomRNG = true,
 
         --[[
-            Forces all audio created with the MUSIC type to be created as a SOUND.
-            May break some behavior if using functions only in MUSIC audio types.
+            Forces all audio created with the Music type to be created as a Sound.
+            May break some behavior if using functions only in Music audio types.
             Right now, none of the other sound types work stable enough to disable this.
         ]]
-        enableCompatibleAudio = true,
+        EnableCompatibleAudio = true,
 
         -- Sets the available fonts that can be used in-game. Should be a path to the fonts.
-        fontList = {"assets/fonts/NotoSans.ttf"},
+        FontList = {"assets/fonts/NotoSans.ttf"},
 
         -- Sets the default primary font used by FontService. Can be changed later if neccessary.
-        fontPrimary = "NotoSans",
+        FontPrimary = "NotoSans",
 
         -- The resolution that FontService will load fonts in. Cannot be changed after FontService loads.
-        fontResolution = 256,
+        FontResolution = 256,
+
+        -- The filter mode that FontService will load fonts in. Cannot be changed after FontService loads.
+        FontFilterMode = Enum.FilterMode.Trilinear,
 
         -- Target FPS the game will try to run at.
-        frameRateMax = 60,
+        FrameRateMax = 60,
 
         --[[
             On certain platforms, Quoton games will open with a terminal attached.
             If true, there will be default messages sent to the terminal to denote it can be ignored.
             These messages are written in English (United States).
         ]]
-        terminalShowIgnoreMessages = true,
+        TerminalShowIgnoreMessages = true,
 
         -- Changes RayLib's ConfigFlags. Recommended to stay at defaults.
-        windowConfigFlags = bit.bor(RayLib.FLAG_WINDOW_RESIZABLE, RayLib.FLAG_MSAA_4X_HINT),
+        WindowConfigFlags = bit.bor(Enum.ConfigFlags.WindowResizable, Enum.ConfigFlags.MSAA4xHint),
 
         -- Maximizes the window on startup.
-        windowMaximize = false,
+        WindowMaximize = false,
 
         -- Sets the initial resolution and window size for the game. Can be changed later using RenderingService.
-        windowResolutionX = 1280,
-        windowResolutionY = 720,
+        WindowResolutionX = 1280,
+        WindowResolutionY = 720,
 
         --[[
             Resizes the game window (accounting for the game resolution's aspect ratio) to best fit inside the user's display in windowed mode.
-            If windowScreenResizeFill is also true, the window will fully resize to the user's display (using resolution's aspect ratio) and may overlap the taskbar on platforms like Windows.
+            If WindowScreenResizeFill is also true, the window will fully resize to the user's display (using resolution's aspect ratio) and may overlap the taskbar on platforms like Windows.
         ]]
-        windowScreenResize = true,
-        windowScreenResizeFill = false,
+        WindowScreenResize = true,
+        WindowScreenResizeFill = false,
 
-        -- If true along with windowScreenResize, the windowResolutionX and windowResolutionY properties are ignored and just use the best fitting resolution.
-        windowScreenResizeResolution = false,
+        -- If true along with WindowScreenResize, the WindowResolutionX and WindowResolutionY properties are ignored and just use the best fitting resolution.
+        WindowScreenResizeResolution = false,
 
         -- The title of the game window.
-        windowTitle = "QuotonGame",
+        WindowTitle = "QuotonGame",
     }
     local setupConfig = SetupService:GetSetupSettings(defaultConfig)
 
@@ -91,8 +95,8 @@ function module:InitializingPreProgram()
     SetupService:RunCustomSetup(setupConfig)
 
     RenderingService:SetResolution(
-        setupConfig.windowResolutionX,
-        setupConfig.windowResolutionY
+        setupConfig.WindowResolutionX,
+        setupConfig.WindowResolutionY
     )
 
     return setupConfig

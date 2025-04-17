@@ -12,7 +12,7 @@ module.RenderSettings = {
     Rotation = 0,
 
     ScreenTint = RayLib.WHITE,
-    ScreenFilter = RayLib.TEXTURE_FILTER_TRILINEAR,
+    ScreenFilter = Enum.FilterMode.Trilinear,
 }
 
 ---@private

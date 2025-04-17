@@ -1,5 +1,5 @@
 local module = {}
-module.initialConfig = {}
+module.InitialConfig = {}
 
 ---@private
 module._scripts = {}

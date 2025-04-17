@@ -16,7 +16,7 @@ end
 local audio
 function script:StartTick()
     print("game running, will attempt to load audio and play...")
-    audio = AudioService:New("assets/audio/test.mp3", Enum.AudioType.SOUND)
+    audio = AudioService:New("assets/audio/test.mp3", Enum.AudioType.Sound)
 end
 
 local stage = 0
@@ -52,10 +52,10 @@ RuntimeService.OnDraw:Connect(function()
     RayLib.DrawRectangle(0, 720 - 5, 1280, 5, RayLib.BLUE)
 
     -- draw circle
-    dir = dir + 4
+    dir = dir + 64
     dir = dir % 360
-    local y = (math.sin(math.rad(dir)) * 60) + 360
-    RayLib.DrawCircle(640, y, 32, RayLib.DARKBLUE)
+    local y = (math.sin(math.rad(dir)) * 180) + 360
+    RayLib.DrawCircle(320 + y, y, 128, RayLib.DARKBLUE)
 
     -- draw mouse
     local mouseX = InputService:GetMouseX()

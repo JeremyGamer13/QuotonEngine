@@ -7,7 +7,9 @@ local libset = require("src.modules.libset")
 
 local module = {}
 
-module.ready = false
+---@private
+module._ready = false
+
 module.ScreenLocation = {
     x = 0,
     y = 0,
@@ -19,20 +21,20 @@ module.ScreenLocation = {
 module._typedChars = ""
 
 function module:GetMouseX()
-    if not self.ready then return 0 end
+    if not self._ready then return 0 end
     local w = self.ScreenLocation.width
     local x = RayLib.GetMouseX() - self.ScreenLocation.x
     return ((x / w) * RenderingService.RenderSettings.ResolutionX)
 end
 function module:GetMouseY()
-    if not self.ready then return 0 end
+    if not self._ready then return 0 end
     local h = self.ScreenLocation.height
     local y = RayLib.GetMouseY() - self.ScreenLocation.y
     return ((y / h) * RenderingService.RenderSettings.ResolutionY)
 end
 
 function module:MouseWithin(rect)
-    if not self.ready then return false end
+    if not self._ready then return false end
     local x = self:GetMouseX()
     local y = self:GetMouseY()
     local isMouseXInside = (x >= rect.x) and (x <= (rect.x + rect.width))
@@ -98,7 +100,7 @@ function module:Key(key)
 end
 
 RuntimeService.OnPreStep:Connect(function()
-    if not module.ready then return end
+    if not module._ready then return end
 
     local bytes = {}
     local currentChar = RayLib.GetCharPressed()
