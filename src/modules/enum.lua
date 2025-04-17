@@ -3,6 +3,13 @@ local RayLua = require("raylua")
 local libset = require("src.modules.libset")
 
 local module = {
+    AlignPosition = {
+        Left = "left",
+        Right = "right",
+        Top = "top",
+        Bottom = "bottom",
+        Center = "center",
+    },
     AudioType = {
         -- Best compatibility with all systems.
         SOUND = "sound",
@@ -21,17 +28,10 @@ local module = {
         ---@deprecated
         RAW = "raw",
     },
-    FillMode = {
-        Crop = "crop",
-        Fit = "fit",
-        Stretch = "stretch",
-    },
-    AlignPosition = {
-        Left = "left",
-        Right = "right",
-        Top = "top",
-        Bottom = "bottom",
-        Center = "center",
+    EasingDir = {
+        In = "in",
+        Out = "out",
+        InOut = "inout",
     },
     EasingMode = {
         Linear = "linear",
@@ -46,10 +46,10 @@ local module = {
         Elastic = "elastic",
         Bounce = "bounce",
     },
-    EasingDir = {
-        In = "in",
-        Out = "out",
-        InOut = "inout",
+    FillMode = {
+        Crop = "crop",
+        Fit = "fit",
+        Stretch = "stretch",
     },
     OpenFileMode = {
         Buffer = "buffer",

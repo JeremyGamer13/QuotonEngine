@@ -13,7 +13,6 @@ local module = {}
 function module:ImportGameScripts()
     return {
         require("src.scripts.test"),
-        require("src.scripts.image"),
     }
 end
 
