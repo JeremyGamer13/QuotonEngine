@@ -2,34 +2,121 @@ local RenderingService = require("src.services.rendering")
 local RuntimeService = require("src.services.runtime")
 
 local RayLib = require("raylib")
+local RayLua = require("raylua")
 
 local libset = require("src.modules.libset")
+local Enum = require("src.modules.enum")
 
 local module = {}
 
 ---@private
 module._ready = false
-
-module.ScreenLocation = {
+module._correctGamepadAxis = false
+---@private
+module._screenLocation = {
     x = 0,
     y = 0,
     width = 1280,
     height = 720,
 }
 
----@private
-module._typedChars = ""
+-- Lists
+-- Keys
+function module:Key(key)
+    if key == "'" then return Enum.InputKey.Apostrophe end
+    if key == "," then return Enum.InputKey.Comma end
+    if key == "-" then return Enum.InputKey.Minus end
+    if key == "." then return Enum.InputKey.Period end
+    if key == "/" then return Enum.InputKey.Slash end
+    if key == "[" then return Enum.InputKey.LeftBracket end
+    if key == "]" then return Enum.InputKey.RightBracket end
+    if key == "\\" then return Enum.InputKey.Backslash end
+    if key == "`" then return Enum.InputKey.Grave end
+    if key == ";" then return Enum.InputKey.Semicolon end
+    if key == "=" then return Enum.InputKey.Equal end
+    if key == " " then return Enum.InputKey.Space end
+    if key == "\t" then return Enum.InputKey.Tab end
 
+    if key == "0" then return Enum.InputKey.Zero end
+    if key == "1" then return Enum.InputKey.One end
+    if key == "2" then return Enum.InputKey.Two end
+    if key == "3" then return Enum.InputKey.Three end
+    if key == "4" then return Enum.InputKey.Four end
+    if key == "5" then return Enum.InputKey.Five end
+    if key == "6" then return Enum.InputKey.Six end
+    if key == "7" then return Enum.InputKey.Seven end
+    if key == "8" then return Enum.InputKey.Eight end
+    if key == "9" then return Enum.InputKey.Nine end
+
+    if key == "a" then return Enum.InputKey.A end
+    if key == "b" then return Enum.InputKey.B end
+    if key == "c" then return Enum.InputKey.C end
+    if key == "d" then return Enum.InputKey.D end
+    if key == "e" then return Enum.InputKey.E end
+    if key == "f" then return Enum.InputKey.F end
+    if key == "g" then return Enum.InputKey.G end
+    if key == "h" then return Enum.InputKey.H end
+    if key == "i" then return Enum.InputKey.I end
+    if key == "j" then return Enum.InputKey.J end
+    if key == "k" then return Enum.InputKey.K end
+    if key == "l" then return Enum.InputKey.L end
+    if key == "m" then return Enum.InputKey.M end
+    if key == "n" then return Enum.InputKey.N end
+    if key == "o" then return Enum.InputKey.O end
+    if key == "p" then return Enum.InputKey.P end
+    if key == "q" then return Enum.InputKey.Q end
+    if key == "r" then return Enum.InputKey.R end
+    if key == "s" then return Enum.InputKey.S end
+    if key == "t" then return Enum.InputKey.T end
+    if key == "u" then return Enum.InputKey.U end
+    if key == "v" then return Enum.InputKey.V end
+    if key == "w" then return Enum.InputKey.W end
+    if key == "x" then return Enum.InputKey.X end
+    if key == "y" then return Enum.InputKey.Y end
+    if key == "z" then return Enum.InputKey.Z end
+
+    return Enum.InputKey.Unknown
+end
+-- Keypad
+function module:Keypad(key)
+    if key == "0" then return Enum.InputKey.KeypadZero end
+    if key == "1" then return Enum.InputKey.KeypadOne end
+    if key == "2" then return Enum.InputKey.KeypadTwo end
+    if key == "3" then return Enum.InputKey.KeypadThree end
+    if key == "4" then return Enum.InputKey.KeypadFour end
+    if key == "5" then return Enum.InputKey.KeypadFive end
+    if key == "6" then return Enum.InputKey.KeypadSix end
+    if key == "7" then return Enum.InputKey.KeypadSeven end
+    if key == "8" then return Enum.InputKey.KeypadEight end
+    if key == "9" then return Enum.InputKey.KeypadNine end
+
+    if key == "." then return Enum.InputKey.KeypadDecimal end
+    if key == "/" then return Enum.InputKey.KeypadDivide end
+    if key == "*" then return Enum.InputKey.KeypadMultiply end
+    if key == "-" then return Enum.InputKey.KeypadSubtract end
+    if key == "+" then return Enum.InputKey.KeypadAdd end
+    if key == "=" then return Enum.InputKey.KeypadEqual end
+
+    return Enum.InputKey.Unknown
+end
+
+-- Input (Generic)
+function module:GetBounds()
+    local loc = module._screenLocation
+    return RayLua.Rectangle(loc.x, loc.y, loc.width, loc.height)
+end
+
+-- Mouse
 function module:GetMouseX()
     if not self._ready then return 0 end
-    local w = self.ScreenLocation.width
-    local x = RayLib.GetMouseX() - self.ScreenLocation.x
+    local w = self._screenLocation.width
+    local x = RayLib.GetMouseX() - self._screenLocation.x
     return ((x / w) * RenderingService.RenderSettings.ResolutionX)
 end
 function module:GetMouseY()
     if not self._ready then return 0 end
-    local h = self.ScreenLocation.height
-    local y = RayLib.GetMouseY() - self.ScreenLocation.y
+    local h = self._screenLocation.height
+    local y = RayLib.GetMouseY() - self._screenLocation.y
     return ((y / h) * RenderingService.RenderSettings.ResolutionY)
 end
 
@@ -42,61 +129,12 @@ function module:MouseWithin(rect)
     return isMouseXInside and isMouseYInside
 end
 
+-- Keyboard
+---@private
+module._typedChars = ""
+
 function module:GetTypedCharacters()
     return module._typedChars
-end
-function module:Key(key)
-    if key == "'" then return RayLib.KEY_APOSTROPHE end
-    if key == "," then return RayLib.KEY_COMMA end
-    if key == "-" then return RayLib.KEY_MINUS end
-    if key == "." then return RayLib.KEY_PERIOD end
-    if key == "/" then return RayLib.KEY_SLASH end
-    if key == ";" then return RayLib.KEY_SEMICOLON end
-    if key == "=" then return RayLib.KEY_EQUAL end
-    if key == "[" then return RayLib.KEY_LEFT_BRACKET end
-    if key == "\\" then return RayLib.KEY_BACKSLASH end
-    if key == "]" then return RayLib.KEY_RIGHT_BRACKET end
-    if key == "`" then return RayLib.KEY_GRAVE end
-
-    if key == "0" then return RayLib.KEY_ZERO end
-    if key == "1" then return RayLib.KEY_ONE end
-    if key == "2" then return RayLib.KEY_TWO end
-    if key == "3" then return RayLib.KEY_THREE end
-    if key == "4" then return RayLib.KEY_FOUR end
-    if key == "5" then return RayLib.KEY_FIVE end
-    if key == "6" then return RayLib.KEY_SIX end
-    if key == "7" then return RayLib.KEY_SEVEN end
-    if key == "8" then return RayLib.KEY_EIGHT end
-    if key == "9" then return RayLib.KEY_NINE end
-
-    if key == "a" then return RayLib.KEY_A end
-    if key == "b" then return RayLib.KEY_B end
-    if key == "c" then return RayLib.KEY_C end
-    if key == "d" then return RayLib.KEY_D end
-    if key == "e" then return RayLib.KEY_E end
-    if key == "f" then return RayLib.KEY_F end
-    if key == "g" then return RayLib.KEY_G end
-    if key == "h" then return RayLib.KEY_H end
-    if key == "i" then return RayLib.KEY_I end
-    if key == "j" then return RayLib.KEY_J end
-    if key == "k" then return RayLib.KEY_K end
-    if key == "l" then return RayLib.KEY_L end
-    if key == "m" then return RayLib.KEY_M end
-    if key == "n" then return RayLib.KEY_N end
-    if key == "o" then return RayLib.KEY_O end
-    if key == "p" then return RayLib.KEY_P end
-    if key == "q" then return RayLib.KEY_Q end
-    if key == "r" then return RayLib.KEY_R end
-    if key == "s" then return RayLib.KEY_S end
-    if key == "t" then return RayLib.KEY_T end
-    if key == "u" then return RayLib.KEY_U end
-    if key == "v" then return RayLib.KEY_V end
-    if key == "w" then return RayLib.KEY_W end
-    if key == "x" then return RayLib.KEY_X end
-    if key == "y" then return RayLib.KEY_Y end
-    if key == "z" then return RayLib.KEY_Z end
-
-    return RayLib.KEY_NULL
 end
 
 RuntimeService.OnPreStep:Connect(function()

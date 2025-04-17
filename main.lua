@@ -131,7 +131,7 @@ while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
     end
 
     -- give input service the destination since otherwise position would be wrong
-    InputService.ScreenLocation = renderDestination
+    InputService._screenLocation = renderDestination
 
     -- we may need to update the max fps target this frame
     if RuntimeService._flags.shouldUpdateMaxFps then

@@ -52,29 +52,35 @@ RuntimeService.OnDraw:Connect(function()
     RayLib.DrawRectangle(0, 720 - 5, 1280, 5, RayLib.BLUE)
 
     -- draw circle
-    dir = dir + 64
+    dir = dir + 4
     dir = dir % 360
-    local y = (math.sin(math.rad(dir)) * 180) + 360
-    RayLib.DrawCircle(320 + y, y, 128, RayLib.DARKBLUE)
+    local y = (math.sin(math.rad(dir)) * 60) + 360
+    RayLib.DrawCircle(640, y, 32, RayLib.DARKBLUE)
 
     -- draw mouse
+    local color = RayLib.BLACK
+    if RayLib.IsMouseButtonDown(RayLib.MOUSE_BUTTON_LEFT) then color = RayLib.MAROON
+    elseif RayLib.IsMouseButtonDown(RayLib.MOUSE_BUTTON_MIDDLE) then color = RayLib.LIME
+    elseif RayLib.IsMouseButtonDown(RayLib.MOUSE_BUTTON_RIGHT) then color = RayLib.DARKBLUE
+    elseif RayLib.IsMouseButtonDown(RayLib.MOUSE_BUTTON_SIDE) then color = RayLib.PURPLE
+    elseif RayLib.IsMouseButtonDown(RayLib.MOUSE_BUTTON_EXTRA) then color = RayLib.YELLOW
+    elseif RayLib.IsMouseButtonDown(RayLib.MOUSE_BUTTON_FORWARD) then color = RayLib.ORANGE
+    elseif RayLib.IsMouseButtonDown(RayLib.MOUSE_BUTTON_BACK) then color = RayLib.BEIGE end
+
     local mouseX = InputService:GetMouseX()
     local mouseY = InputService:GetMouseY()
-    local color = RayLib.RED
-    if RayLib.IsMouseButtonDown(RayLua.MOUSE_LEFT_BUTTON) then
-        color = RayLib.BLACK
-    end
     RayLib.DrawCircle(mouseX, mouseY, 10, color)
 
     -- draw text
-    local frameTime = RayLib.GetFrameTime()
+    local font = FontService:GetPrimaryFont()
     local fontSize = 64
 
-    local font = FontService:GetPrimaryFont()
+    local frameTime = RayLib.GetFrameTime()
+    local inputBounds = InputService:GetBounds()
     RenderingService:DrawText(font, "FT: " .. tostring(frameTime), 32, 32, RayLib.ORANGE, fontSize)
     RenderingService:DrawText(font, "FPS: " .. tostring(1 / frameTime), 32, 64, RayLib.ORANGE, fontSize)
-    RenderingService:DrawText(font, "W: " .. tostring(InputService.ScreenLocation.width), 32, 96, RayLib.BLUE, fontSize)
-    RenderingService:DrawText(font, "H: " .. tostring(InputService.ScreenLocation.height), 32, 128, RayLib.BLUE, fontSize)
+    RenderingService:DrawText(font, "W: " .. tostring(inputBounds.width), 32, 96, RayLib.BLUE, fontSize)
+    RenderingService:DrawText(font, "H: " .. tostring(inputBounds.height), 32, 128, RayLib.BLUE, fontSize)
     RenderingService:DrawText(font, "X: " .. tostring(mouseX), 32, 128 + 32, RayLib.RED, fontSize)
     RenderingService:DrawText(font, "Y: " .. tostring(mouseY), 32, 128 + 64, RayLib.RED, fontSize)
 end)

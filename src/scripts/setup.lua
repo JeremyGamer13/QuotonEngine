@@ -14,6 +14,7 @@ local module = {}
 function module:ImportGameScripts()
     return {
         require("src.scripts.test"),
+        require("src.scripts.gamepadtest"),
     }
 end
 
@@ -58,6 +59,13 @@ function module:InitializingPreProgram()
 
         -- Target FPS the game will try to run at.
         FrameRateMax = 60,
+
+        --[[
+            The current raylib-lua bindings seem to have the gamepad axis indexes off by one.
+            Enabling this fix will offset the index, though only in the InputService functions.
+        ]]
+        -- TODO: actually add this, it should offset by -1
+        GamepadAxisFix = true,
 
         --[[
             On certain platforms, Quoton games will open with a terminal attached.
