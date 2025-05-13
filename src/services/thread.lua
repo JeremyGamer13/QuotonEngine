@@ -5,8 +5,11 @@ local libset = require("src.modules.libset")
 
 local module = {}
 
+---@private
 local waitingFunctions = {}
+---@private
 local waitingFunctionIds = {}
+---@private
 local currentId = 0
 
 function module:Run(func)

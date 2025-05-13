@@ -1,7 +1,9 @@
 local Enum = require("src.modules.enum")
 
 local module = {}
-local functions = {}
+
+---@private
+local _functions = {}
 
 -- helper
 local function multiplierToNormalNumber(mul, start, endd)
@@ -22,7 +24,7 @@ end
 
 -- tween func
 function module:Tween(mode, direction, start, endd, progress)
-    local tweened = functions[mode](progress, direction)
+    local tweened = _functions[mode](progress, direction)
     return multiplierToNormalNumber(tweened, start, endd)
 end
 
@@ -30,10 +32,10 @@ end
 -- Easing functions originally from https://easings.net
 -- Original source licensed under GPL-3.0: https://github.com/ai/easings.net/blob/master/LICENSE
 -- SPDX-License-Identifier: GPL-3.0-only
-functions.linear = function(x)
+_functions.linear = function(x)
     return x -- lol
 end
-functions.sine = function(x, dir)
+_functions.sine = function(x, dir)
     if dir == Enum.EasingDir.In then
         return 1 - math.cos((x * math.pi) / 2)
     elseif dir == Enum.EasingDir.Out then
@@ -44,7 +46,7 @@ functions.sine = function(x, dir)
         return 0
     end
 end
-functions.quad = function(x, dir)
+_functions.quad = function(x, dir)
     if dir == Enum.EasingDir.In then
         return x * x
     elseif dir == Enum.EasingDir.Out then
@@ -55,7 +57,7 @@ functions.quad = function(x, dir)
         return 0
     end
 end
-functions.cubic = function(x, dir)
+_functions.cubic = function(x, dir)
     if dir == Enum.EasingDir.In then
         return x * x * x
     elseif dir == Enum.EasingDir.Out then
@@ -66,7 +68,7 @@ functions.cubic = function(x, dir)
         return 0
     end
 end
-functions.quart = function(x, dir)
+_functions.quart = function(x, dir)
     if dir == Enum.EasingDir.In then
         return x * x * x * x
     elseif dir == Enum.EasingDir.Out then
@@ -77,7 +79,7 @@ functions.quart = function(x, dir)
         return 0
     end
 end
-functions.quint = function(x, dir)
+_functions.quint = function(x, dir)
     if dir == Enum.EasingDir.In then
         return x * x * x * x * x
     elseif dir == Enum.EasingDir.Out then
@@ -88,7 +90,7 @@ functions.quint = function(x, dir)
         return 0
     end
 end
-functions.expo = function(x, dir)
+_functions.expo = function(x, dir)
     if dir == Enum.EasingDir.In then
         return test(x == 0, 0, pow(2, 10 * x - 10))
     elseif dir == Enum.EasingDir.Out then
@@ -104,7 +106,7 @@ functions.expo = function(x, dir)
         return 0
     end
 end
-functions.circ = function(x, dir)
+_functions.circ = function(x, dir)
     if dir == Enum.EasingDir.In then
         return 1 - math.sqrt(1 - pow(x, 2))
     elseif dir == Enum.EasingDir.Out then
@@ -117,7 +119,7 @@ functions.circ = function(x, dir)
         return 0
     end
 end
-functions.back = function(x, dir)
+_functions.back = function(x, dir)
     if dir == Enum.EasingDir.In then
         local c1 = 1.70158
         local c3 = c1 + 1
@@ -139,7 +141,7 @@ functions.back = function(x, dir)
         return 0
     end
 end
-functions.elastic = function(x, dir)
+_functions.elastic = function(x, dir)
     if dir == Enum.EasingDir.In then
         local c4 = (2 * math.pi) / 3
 
@@ -170,9 +172,9 @@ functions.elastic = function(x, dir)
         return 0
     end
 end
-functions.bounce = function(x, dir)
+_functions.bounce = function(x, dir)
     if dir == Enum.EasingDir.In then
-        return 1 - functions.bounce(1 - x, Enum.EasingDir.Out)
+        return 1 - _functions.bounce(1 - x, Enum.EasingDir.Out)
     elseif dir == Enum.EasingDir.Out then
         local n1 = 7.5625
         local d1 = 2.75
@@ -194,8 +196,8 @@ functions.bounce = function(x, dir)
         end
     elseif dir == Enum.EasingDir.InOut then
         return test(x < 0.5
-        , (1 - functions.bounce(1 - 2 * x, Enum.EasingDir.Out)) / 2
-        , (1 + functions.bounce(2 * x - 1, Enum.EasingDir.Out)) / 2)
+        , (1 - _functions.bounce(1 - 2 * x, Enum.EasingDir.Out)) / 2
+        , (1 + _functions.bounce(2 * x - 1, Enum.EasingDir.Out)) / 2)
     else
         return 0
     end

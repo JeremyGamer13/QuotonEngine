@@ -11,6 +11,7 @@ local module = {}
 
 ---@private
 module._ready = false
+---@private
 module._correctGamepadAxis = false
 ---@private
 module._screenLocation = {
