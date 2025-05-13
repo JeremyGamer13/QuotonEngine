@@ -1,7 +1,5 @@
 -- THIS IS A CORE SCRIPT, You can edit the script and behavior of the functions, but DO NOT DELETE THE SCRIPT, OR IT'S FUNCTIONS!
 -- Also make sure that all functions originally here return the same expected values.
-local RayLib = require("raylib")
-local RayLua = require("raylua")
 local Enum = require("src.modules.enum")
 local bit = require("bit")
 
