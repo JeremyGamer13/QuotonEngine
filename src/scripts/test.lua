@@ -7,6 +7,7 @@ local FontService = require("src.services.font")
 local RayLib = require("raylib")
 local RayLua = require("raylua")
 local Enum = require("src.modules.enum")
+local libset = require("src.modules.libset")
 
 local script = {}
 function script:Initialize()
@@ -25,7 +26,7 @@ RuntimeService.OnStep:Connect(function()
         audio:Play()
     end
 
-    if RayLib.IsKeyPressed(RayLib.KEY_SPACE) then
+    if InputService:IsKeyPressed(RayLib.KEY_SPACE) then
         stage = stage + 1
         stage = stage % 4
     end
@@ -83,6 +84,8 @@ RuntimeService.OnDraw:Connect(function()
     RenderingService:DrawText(font, "H: " .. tostring(inputBounds.height), 32, 128, RayLib.BLUE, fontSize)
     RenderingService:DrawText(font, "X: " .. tostring(mouseX), 32, 128 + 32, RayLib.RED, fontSize)
     RenderingService:DrawText(font, "Y: " .. tostring(mouseY), 32, 128 + 64, RayLib.RED, fontSize)
+    RenderingService:DrawText(font, "TXT: " .. tostring(InputService:GetPressedInputKeys()), 32,
+    128 + 96, RayLib.RED, fontSize)
 end)
 
 return script

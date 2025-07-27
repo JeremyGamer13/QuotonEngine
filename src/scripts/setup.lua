@@ -59,8 +59,9 @@ function module:InitializingPreProgram()
         FrameRateMax = 60,
 
         --[[
-            The current raylib-lua bindings seem to have the gamepad axis indexes off by one.
-            Enabling this fix will offset the index, though only in the InputService functions.
+            The current raylib-lua bindings used in Quoton seem to have the gamepad axis indexes off by one.
+            Enabling this fix will offset the index.
+            This is enabled by default.
         ]]
         -- TODO: actually add this, it should offset by -1
         GamepadAxisFix = true,

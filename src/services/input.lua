@@ -101,26 +101,26 @@ function module:Keypad(key)
     return Enum.InputKey.Unknown
 end
 
--- Input (Generic)
+-- Inputs
+-- Generic (no devices)
 function module:GetBounds()
     local loc = module._screenLocation
     return RayLua.Rectangle(loc.x, loc.y, loc.width, loc.height)
 end
 
 -- Mouse
-function module:GetMouseX()
+function module:GetMouseX() -- Return the X position of the mouse cursor.
     if not self._ready then return 0 end
     local w = self._screenLocation.width
     local x = RayLib.GetMouseX() - self._screenLocation.x
     return ((x / w) * RenderingService.RenderSettings.ResolutionX)
 end
-function module:GetMouseY()
+function module:GetMouseY() -- Return the Y position of the mouse cursor.
     if not self._ready then return 0 end
     local h = self._screenLocation.height
     local y = RayLib.GetMouseY() - self._screenLocation.y
     return ((y / h) * RenderingService.RenderSettings.ResolutionY)
 end
-
 function module:MouseWithin(rect)
     if not self._ready then return false end
     local x = self:GetMouseX()
@@ -131,31 +131,56 @@ function module:MouseWithin(rect)
 end
 
 -- Keyboard
----@private
-module._typedChars = ""
-
-function module:GetTypedCharacters()
-    return module._typedChars
+module._typedKeycodes = {} ---@private
+module._typedUnicodes = {} ---@private
+function module:IsKeyDown(inputKey) -- Check if the inputKey is being pressed down
+    return RayLib.IsKeyDown(inputKey)
 end
-
-RuntimeService.OnPreStep:Connect(function()
-    if not module._ready then return end
-
-    local bytes = {}
-    local currentChar = RayLib.GetCharPressed()
-
-    while currentChar ~= 0 do
-        table.insert(bytes, currentChar)
-        currentChar = RayLib.GetCharPressed()
-    end
-
-    module._typedChars = libset.table.join(libset.table.map(bytes, function(byte)
+function module:IsKeyUp(inputKey) -- Check if the inputKey is not being pressed down
+    return RayLib.IsKeyUp(inputKey)
+end
+function module:IsKeyPressed(inputKey) -- Check if (on this frame) the inputKey was pressed
+    return RayLib.IsKeyPressed(inputKey)
+end
+function module:IsKeyReleased(inputKey) -- Check if (on this frame) the inputKey was released
+    return RayLib.IsKeyReleased(inputKey)
+end
+function module:GetPressedInputKeys() -- Returns a table of keycodes, which can be compared against Enum.InputKey
+    return module._typedKeycodes
+end
+function module:GetTypedUnicodes() -- Returns a table of Unicode numbers representing the keys pressed. On some devices, holding a key down will cause it to repeatedly be typed. This function will also get keys typed from said behavior.
+    return module._typedUnicodes
+end
+function module:GetTypedCharacters() -- Converts the Unicode number table from GetTypedUnicodes into a table of the typed characters
+    return libset.table.map(module._typedUnicodes, function(byte)
         local char = ""
         pcall(function()
             char = string.char(byte)
         end)
         return char
-    end), "")
+    end)
+end
+
+RuntimeService.OnPreStep:Connect(function()
+    if not module._ready then return end
+
+    -- reset tables
+    module._typedKeycodes = {}
+    module._typedUnicodes = {}
+
+    -- GetKeyPressed loop
+    local currentKeycode = RayLib.GetKeyPressed()
+    while currentKeycode ~= 0 do
+        table.insert(module._typedKeycodes, currentKeycode)
+        currentKeycode = RayLib.GetKeyPressed()
+    end
+
+    -- GetCharPressed loop
+    local currentUnicode = RayLib.GetCharPressed()
+    while currentUnicode ~= 0 do
+        table.insert(module._typedUnicodes, currentUnicode)
+        currentUnicode = RayLib.GetCharPressed()
+    end
 end)
 
 return module
