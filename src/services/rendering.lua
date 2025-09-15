@@ -4,7 +4,8 @@ local Enum = require("src.modules.enum")
 
 local module = {}
 
-module.RenderSettings = {
+---@private
+module._renderSettings = {
     ResolutionX = 1280,
     ResolutionY = 720,
 
@@ -27,21 +28,27 @@ module._state = {
 
 function module:GetResolution()
     return {
-        width = self.RenderSettings.ResolutionX,
-        height = self.RenderSettings.ResolutionY
+        width = self._renderSettings.ResolutionX,
+        height = self._renderSettings.ResolutionY
     }
 end
 function module:SetResolution(width, height)
-    self.RenderSettings.ResolutionX = width
-    self.RenderSettings.ResolutionY = height
+    self._renderSettings.ResolutionX = width
+    self._renderSettings.ResolutionY = height
     self._flags.shouldReloadRenTexture = true
+end
+function module:SetRotation(rotation)
+    self._renderSettings.Rotation = rotation
+end
+function module:SetFillMode(fillMode)
+    self._renderSettings.FillMode = fillMode
 end
 
 function module:GetScreenFilter()
-    return self.RenderSettings.ScreenFilter
+    return self._renderSettings.ScreenFilter
 end
 function module:SetScreenFilter(newFilter)
-    self.RenderSettings.ScreenFilter = newFilter
+    self._renderSettings.ScreenFilter = newFilter
     self._flags.shouldReloadRenTexture = true
 end
 
@@ -104,7 +111,7 @@ function module:GetAppropriateResolution(getBelow) -- Returns the best width & h
 end
 
 function module:SetTint(color)
-    self.RenderSettings.ScreenTint = color
+    self._renderSettings.ScreenTint = color
 end
 function module:DrawText(font, text, x, y, color, size, hAlign, vAlign)
     if not color then

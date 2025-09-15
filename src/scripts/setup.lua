@@ -66,13 +66,6 @@ function module:InitializingPreProgram()
         -- TODO: actually add this, it should offset by -1
         GamepadAxisFix = true,
 
-        --[[
-            On certain platforms, Quoton games will open with a terminal attached.
-            If true, there will be default messages sent to the terminal to denote it can be ignored.
-            These messages are written in English (United States).
-        ]]
-        TerminalShowIgnoreMessages = true,
-
         -- Changes RayLib's ConfigFlags. Recommended to stay at defaults.
         WindowConfigFlags = bit.bor(Enum.ConfigFlags.WindowResizable, Enum.ConfigFlags.MSAA4xHint),
 

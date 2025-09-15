@@ -1,7 +1,7 @@
 # TODO Items
 ## IMPORTANT
-- [ ] Remove `TerminalShowIgnoreMessages`
-- [ ] Make `RenderingService.RenderSettings` private
+- [x] Remove `TerminalShowIgnoreMessages`
+- [x] Make `RenderingService.RenderSettings` private
 - [ ] Start making it so user scripts dont rely on RayLib, plus dont say like "will apply only in the InputService functions" since we will only code for using those
     - [ ] Implement everything for inputs into InputService.
     - [ ] add GamepadAxisFix

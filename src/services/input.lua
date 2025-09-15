@@ -113,13 +113,13 @@ function module:GetMouseX() -- Return the X position of the mouse cursor.
     if not self._ready then return 0 end
     local w = self._screenLocation.width
     local x = RayLib.GetMouseX() - self._screenLocation.x
-    return ((x / w) * RenderingService.RenderSettings.ResolutionX)
+    return ((x / w) * RenderingService._renderSettings.ResolutionX)
 end
 function module:GetMouseY() -- Return the Y position of the mouse cursor.
     if not self._ready then return 0 end
     local h = self._screenLocation.height
     local y = RayLib.GetMouseY() - self._screenLocation.y
-    return ((y / h) * RenderingService.RenderSettings.ResolutionY)
+    return ((y / h) * RenderingService._renderSettings.ResolutionY)
 end
 function module:MouseWithin(rect)
     if not self._ready then return false end

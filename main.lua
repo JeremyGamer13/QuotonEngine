@@ -20,8 +20,8 @@ SetupService.InitialConfig = SetupConfig
 -- create window
 RayLib.SetConfigFlags(SetupConfig.WindowConfigFlags)
 RayLib.InitWindow(
-    RenderingService.RenderSettings.ResolutionX,
-    RenderingService.RenderSettings.ResolutionY,
+    RenderingService._renderSettings.ResolutionX,
+    RenderingService._renderSettings.ResolutionY,
     SetupConfig.WindowTitle
 )
 RayLib.SetTargetFPS(SetupConfig.FrameRateMax)
@@ -77,25 +77,15 @@ FontService:Load(SetupConfig.FontList)
 InputService._ready = true
 
 local RenderTexture = RayLib.LoadRenderTexture(
-    RenderingService.RenderSettings.ResolutionX,
-    RenderingService.RenderSettings.ResolutionY
+    RenderingService._renderSettings.ResolutionX,
+    RenderingService._renderSettings.ResolutionY
 )
-RayLib.SetTextureFilter(RenderTexture.texture, RenderingService.RenderSettings.ScreenFilter)
+RayLib.SetTextureFilter(RenderTexture.texture, RenderingService._renderSettings.ScreenFilter)
 RenderingService._target = RenderTexture
 
 -- start all game scripts
 SetupService:Initialize()
 SetupService:StartTick()
-
-if SetupConfig.TerminalShowIgnoreMessages then
-    print("")
-    print("-----")
-    print("On certain platforms, this terminal / window will appear while you play this game.")
-    print("Do not close this! This is currently running the active game.")
-    print("Feel free to move it away or minimize the terminal, since you shouldn't need it for any gameplay.")
-    print("-----")
-    print("")
-end
 
 local ForceWindowClose = false
 TransmitterService:ListenFor("PROCESS_EXIT", function()
@@ -110,22 +100,22 @@ while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
         width = windowSize.width,
         height = windowSize.height
     }
-    if RenderingService.RenderSettings.FillMode == Enum.FillMode.Crop then
-        local ratioX = windowSize.width / RenderingService.RenderSettings.ResolutionX
-        local ratioY = windowSize.height / RenderingService.RenderSettings.ResolutionY
+    if RenderingService._renderSettings.FillMode == Enum.FillMode.Crop then
+        local ratioX = windowSize.width / RenderingService._renderSettings.ResolutionX
+        local ratioY = windowSize.height / RenderingService._renderSettings.ResolutionY
         local scale = math.max(ratioX, ratioY)
 
-        renderDestination.width = RenderingService.RenderSettings.ResolutionX * scale
-        renderDestination.height = RenderingService.RenderSettings.ResolutionY * scale
+        renderDestination.width = RenderingService._renderSettings.ResolutionX * scale
+        renderDestination.height = RenderingService._renderSettings.ResolutionY * scale
         renderDestination.x = (windowSize.width - renderDestination.width) / 2
         renderDestination.y = (windowSize.height - renderDestination.height) / 2
-    elseif RenderingService.RenderSettings.FillMode == Enum.FillMode.Fit then
-        local ratioX = windowSize.width / RenderingService.RenderSettings.ResolutionX
-        local ratioY = windowSize.height / (RenderingService.RenderSettings.ResolutionY)
+    elseif RenderingService._renderSettings.FillMode == Enum.FillMode.Fit then
+        local ratioX = windowSize.width / RenderingService._renderSettings.ResolutionX
+        local ratioY = windowSize.height / (RenderingService._renderSettings.ResolutionY)
         local scale = math.min(ratioX, ratioY)
 
-        renderDestination.width = RenderingService.RenderSettings.ResolutionX * scale
-        renderDestination.height = (RenderingService.RenderSettings.ResolutionY) * scale
+        renderDestination.width = RenderingService._renderSettings.ResolutionX * scale
+        renderDestination.height = (RenderingService._renderSettings.ResolutionY) * scale
         renderDestination.x = (windowSize.width - renderDestination.width) / 2
         renderDestination.y = (windowSize.height - renderDestination.height) / 2
     end
@@ -146,10 +136,10 @@ while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
         RayLib.UnloadRenderTexture(RenderTexture)
 
         RenderTexture = RayLib.LoadRenderTexture(
-            RenderingService.RenderSettings.ResolutionX,
-            RenderingService.RenderSettings.ResolutionY
+            RenderingService._renderSettings.ResolutionX,
+            RenderingService._renderSettings.ResolutionY
         )
-        RayLib.SetTextureFilter(RenderTexture.texture, RenderingService.RenderSettings.ScreenFilter)
+        RayLib.SetTextureFilter(RenderTexture.texture, RenderingService._renderSettings.ScreenFilter)
         RenderingService._target = RenderTexture
         RenderingService._flags.shouldReloadRenTexture = false
     end
@@ -172,7 +162,7 @@ while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
     -- crop is negative height so the texture is flipped before rendering
     -- apparently something to do with opengl(?) coordinates starting at the bottom
     local renderTexConfig = {
-        crop = RayLua.Rectangle(0, 0, RenderingService.RenderSettings.ResolutionX, 0 - RenderingService.RenderSettings.ResolutionY),
+        crop = RayLua.Rectangle(0, 0, RenderingService._renderSettings.ResolutionX, 0 - RenderingService._renderSettings.ResolutionY),
         destination = RayLua.Rectangle(renderDestination.x, renderDestination.y, renderDestination.width, renderDestination.height),
         position = RayLua.Vector2(0, 0),
     }
@@ -181,8 +171,8 @@ while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
         renderTexConfig.crop,
         renderTexConfig.destination,
         renderTexConfig.position,
-        RenderingService.RenderSettings.Rotation,
-        RenderingService.RenderSettings.ScreenTint
+        RenderingService._renderSettings.Rotation,
+        RenderingService._renderSettings.ScreenTint
     )
 
     RayLib.EndDrawing()
