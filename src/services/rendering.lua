@@ -15,7 +15,6 @@ module._renderSettings = {
     ScreenTint = RayLib.WHITE,
     ScreenFilter = Enum.FilterMode.Trilinear,
 }
-
 ---@private
 module._flags = {
     shouldReloadRenTexture = false,
@@ -37,19 +36,31 @@ function module:SetResolution(width, height)
     self._renderSettings.ResolutionY = height
     self._flags.shouldReloadRenTexture = true
 end
+
+function module:GetRotation()
+    return self._renderSettings.Rotation
+end
 function module:SetRotation(rotation)
     self._renderSettings.Rotation = rotation
+end
+function module:GetFillMode()
+    return self._renderSettings.FillMode
 end
 function module:SetFillMode(fillMode)
     self._renderSettings.FillMode = fillMode
 end
-
 function module:GetScreenFilter()
     return self._renderSettings.ScreenFilter
 end
 function module:SetScreenFilter(newFilter)
     self._renderSettings.ScreenFilter = newFilter
     self._flags.shouldReloadRenTexture = true
+end
+function module:GetTint()
+    return self._renderSettings.ScreenTint
+end
+function module:SetTint(color)
+    self._renderSettings.ScreenTint = color
 end
 
 function module:GetWindowResolution()
@@ -110,9 +121,6 @@ function module:GetAppropriateResolution(getBelow) -- Returns the best width & h
     }
 end
 
-function module:SetTint(color)
-    self._renderSettings.ScreenTint = color
-end
 function module:DrawText(font, text, x, y, color, size, hAlign, vAlign)
     if not color then
         color = RayLib.WHITE
