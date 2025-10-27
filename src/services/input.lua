@@ -1,8 +1,10 @@
+local QuotonLibrary = require("src.engine.quoton-library")
+local Rectangle = require("src.engine.quoton-rectangle")
+
 local RenderingService = require("src.services.rendering")
 local RuntimeService = require("src.services.runtime")
 
-local RayLib = require("raylib")
-local RayLua = require("raylua")
+local RayLib = QuotonLibrary -- TODO: replace this
 
 local libset = require("src.modules.libset")
 local Enum = require("src.modules.enum")
@@ -105,7 +107,7 @@ end
 -- Generic (no devices)
 function module:GetBounds()
     local loc = module._screenLocation
-    return RayLua.Rectangle(loc.x, loc.y, loc.width, loc.height)
+    return Rectangle.New(loc.x, loc.y, loc.width, loc.height)
 end
 
 -- Mouse

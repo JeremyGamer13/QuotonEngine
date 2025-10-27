@@ -1,6 +1,9 @@
+local QuotonLibrary = require("src.engine.quoton-library")
+
+local RayLib = QuotonLibrary -- TODO: Replace this
+
 local RuntimeService = require("src.services.runtime")
 
-local RayLib = require("raylib")
 local libset = require("src.modules.libset")
 
 local module = {}
