@@ -110,105 +110,56 @@ function RenderingService:SetTint(color)
 end
 
 -- Window
-
-function RenderingService:GetWindowBounds()
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+if Environment.Library == "raylib-tsnake41" then
+    local RayLib = QuotonLibrary
+    function RenderingService:GetWindowBounds()
         local windowPosition = RayLib.GetWindowPosition()
         return Rectangle.New(windowPosition.x, windowPosition.y, RayLib.GetScreenWidth(), RayLib.GetScreenHeight())
-    else
-        error("RenderingService:GetWindowBounds for Library " .. tostring(Environment.Library) .. " not implemented")
     end
-end
-function RenderingService:GetWindowDPIScale()
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+    function RenderingService:GetWindowDPIScale()
         local scale = RayLib.GetWindowScaleDPI()
         return Vector2.New(scale.x, scale.y)
-    else
-        error("RenderingService:GetWindowDPIScale for Library " .. tostring(Environment.Library) .. " not implemented")
     end
-end
 
-function RenderingService:SetWindowPosition(x, y)
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+    function RenderingService:SetWindowPosition(x, y)
         RayLib.SetWindowPosition(x, y)
-    else
-        error("RenderingService:SetWindowPosition for Library " .. tostring(Environment.Library) .. " not implemented")
     end
-end
-function RenderingService:SetWindowSize(width, height)
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+    function RenderingService:SetWindowSize(width, height)
         RayLib.SetWindowSize(width, height)
-    else
-        error("RenderingService:SetWindowSize for Library " .. tostring(Environment.Library) .. " not implemented")
     end
-end
-function RenderingService:MaximizeWindow()
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+    function RenderingService:MaximizeWindow()
         RayLib.MaximizeWindow()
-    else
-        error("RenderingService:MaximizeWindow for Library " .. tostring(Environment.Library) .. " not implemented")
     end
-end
-function RenderingService:MinimizeWindow()
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+    function RenderingService:MinimizeWindow()
         RayLib.MinimizeWindow()
-    else
-        error("RenderingService:MinimizeWindow for Library " .. tostring(Environment.Library) .. " not implemented")
     end
 end
 
 -- Monitor
-
-function RenderingService:GetCurrentMonitor()
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+if Environment.Library == "raylib-tsnake41" then
+    local RayLib = QuotonLibrary
+    function RenderingService:GetCurrentMonitor()
         return RayLib.GetCurrentMonitor()
-    else
-        error("RenderingService:GetCurrentMonitor for Library " .. tostring(Environment.Library) .. " not implemented")
     end
-end
-function RenderingService:GetMonitorCount()
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+    function RenderingService:GetMonitorCount()
         return RayLib.GetMonitorCount()
-    else
-        error("RenderingService:GetMonitorCount for Library " .. tostring(Environment.Library) .. " not implemented")
     end
-end
-function RenderingService:GetMonitorRefreshRate(monitor)
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+    function RenderingService:GetMonitorRefreshRate(monitor)
         return RayLib.GetMonitorRefreshRate(monitor)
-    else
-        error("RenderingService:GetMonitorRefreshRate for Library " .. tostring(Environment.Library) .. " not implemented")
     end
-end
-function RenderingService:GetMonitorBounds(monitor)
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+    function RenderingService:GetMonitorBounds(monitor)
         local monitorPosition = RayLib.GetMonitorPosition(monitor)
         return Rectangle.New(monitorPosition.x, monitorPosition.y, RayLib.GetMonitorWidth(monitor), RayLib.GetMonitorHeight(monitor))
-    else
-        error("RenderingService:GetMonitorBounds for Library " .. tostring(Environment.Library) .. " not implemented")
     end
 end
 
 -- Shapes
 -- Rectangles
-
--- Draws a rectangle with a specific color using the given rectangle as bounds.
-function RenderingService:DrawRectangle(rect, color)
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+if Environment.Library == "raylib-tsnake41" then
+    local RayLib = QuotonLibrary
+    -- Draws a rectangle with a specific color using the given rectangle as bounds.
+    function RenderingService:DrawRectangle(rect, color)
         RayLib.DrawRectangleRec(rect, color)
-    else
-        error("RenderingService:DrawRectangle for Library " .. tostring(Environment.Library) .. " not implemented")
     end
 end
 -- Same as DrawRectangle but you need to provide each parameter of the rectangle individually.
@@ -218,14 +169,11 @@ function RenderingService:DrawRectangleLong(x, y, width, height, color)
 end
 
 -- Circles
-
--- Draws a circle with a specific color using the provided vector as the center point.
-function RenderingService:DrawCircle(center, radius, color)
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
+if Environment.Library == "raylib-tsnake41" then
+    local RayLib = QuotonLibrary
+    -- Draws a circle with a specific color using the provided vector as the center point.
+    function RenderingService:DrawCircle(center, radius, color)
         RayLib.DrawCircleV(center, radius, color)
-    else
-        error("RenderingService:DrawCircle for Library " .. tostring(Environment.Library) .. " not implemented")
     end
 end
 -- Same as DrawCircle but you need to provide each parameter of the vector individually.
@@ -234,36 +182,39 @@ function RenderingService:DrawCircleLong(x, y, radius, color)
     self:DrawCircle(vector, radius, color)
 end
 
-function RenderingService:DrawText(font, text, x, y, color, size, hAlign, vAlign)
-    -- TODO: replace this
+-- Text
+if Environment.Library == "raylib-tsnake41" then
     local RayLib = QuotonLibrary
-    if not color then
-        color = RayLib.WHITE
-    end
+    -- Draws a string of text onto the screen using the provided settings.
+    function RenderingService:DrawText(font, text, x, y, color, size, hAlign, vAlign)
+        -- TODO: replace this
+        if not color then
+            color = Enum.Color.White
+        end
 
-    if not hAlign then
-        hAlign = 0
-    end
-    if not vAlign then
-        vAlign = 0
-    end
+        if not hAlign then
+            hAlign = 0
+        end
+        if not vAlign then
+            vAlign = 0
+        end
 
-    if hAlign ~= 0 then
-        local measure = RayLib.MeasureTextEx(font, text, size, 1)
-        local width = measure.x
+        if hAlign ~= 0 then
+            local measure = RayLib.MeasureTextEx(font, text, size, 1)
+            local width = measure.x
 
-        x = x - (width * hAlign)
+            x = x - (width * hAlign)
+        end
+        y = y - (size * vAlign)
+
+        local pos = Vector2.New(x, y)
+        RayLib.DrawTextEx(font, text, pos, size, 1, color)
     end
-    y = y - (size * vAlign)
-
-    local pos = Vector2.New(x, y)
-    RayLib.DrawTextEx(font, text, pos, size, 1, color)
 end
+-- Repeatedly draws the text around the position provided to create an outline. Use DrawText after to draw the real text.
 function RenderingService:DrawTextOutline(font, text, x, y, color, size, hAlign, vAlign)
-    -- TODO: replace this
-    local RayLib = QuotonLibrary
     if not color then
-        color = RayLib.BLACK
+        color = Enum.Color.Black
     end
 
     self:DrawText(font, text, x - 1, y - 1, color, size, hAlign, vAlign)
@@ -272,43 +223,48 @@ function RenderingService:DrawTextOutline(font, text, x, y, color, size, hAlign,
     self:DrawText(font, text, x - 1, y + 1, color, size, hAlign, vAlign)
 end
 
-function RenderingService:DrawTextureWHRO(texture, x, y, w, h, r, color, hAlign, vAlign, rotHAlign, rotVAlign)
-    -- TODO: replace this
+-- Textures
+if Environment.Library == "raylib-tsnake41" then
     local RayLib = QuotonLibrary
-    if not color then
-        color = RayLib.WHITE
+    -- Draws a texture, allows you to configure the width, height, rotation, and rotation alignment.
+    function RenderingService:DrawTextureWHRO(texture, x, y, w, h, r, color, hAlign, vAlign, rotHAlign, rotVAlign)
+        if not color then
+            color = Enum.Color.White
+        end
+
+        if not hAlign then
+            hAlign = 0
+        end
+        if not vAlign then
+            vAlign = 0
+        end
+
+        if not rotHAlign then
+            rotHAlign = 0
+        end
+        if not rotVAlign then
+            rotVAlign = 0
+        end
+
+        local adjustedX = x - w * hAlign
+        local adjustedY = y - h * vAlign
+
+        local originX = w * rotHAlign
+        local originY = h * rotVAlign
+
+        local finalX = adjustedX + originX
+        local finalY = adjustedY + originY
+
+        local srcRect = Rectangle.New(0, 0, texture.width, texture.height)
+        local destRect = Rectangle.New(finalX, finalY, w, h)
+        RayLib.DrawTexturePro(texture, srcRect, destRect, Vector2.New(originX, originY), r, color)
     end
-
-    if not hAlign then
-        hAlign = 0
-    end
-    if not vAlign then
-        vAlign = 0
-    end
-
-    if not rotHAlign then
-        rotHAlign = 0
-    end
-    if not rotVAlign then
-        rotVAlign = 0
-    end
-
-    local adjustedX = x - w * hAlign
-    local adjustedY = y - h * vAlign
-
-    local originX = w * rotHAlign
-    local originY = h * rotVAlign
-
-    local finalX = adjustedX + originX
-    local finalY = adjustedY + originY
-
-    local srcRect = Rectangle.New(0, 0, texture.width, texture.height)
-    local destRect = Rectangle.New(finalX, finalY, w, h)
-    RayLib.DrawTexturePro(texture, srcRect, destRect, Vector2.New(originX, originY), r, color)
 end
+-- Draws a texture, allows you to configure the width, height, and rotation.
 function RenderingService:DrawTextureWHR(texture, x, y, w, h, r, color, hAlign, vAlign)
     self:DrawTextureWHRO(texture, x, y, w, h, r, color, hAlign, vAlign, hAlign, vAlign)
 end
+-- Draws a texture, allows you to configure the width and height.
 function RenderingService:DrawTextureWH(texture, x, y, w, h, color, hAlign, vAlign)
     self:DrawTextureWHR(texture, x, y, w, h, 0, color, hAlign, vAlign)
 end
