@@ -1,22 +1,28 @@
+local Environment = require("src.modules.env")
+
+-- libset is a generic library I made that adds JS-like functions into Lua.
+-- Full name is LibrarySet but recommended to shorten to libset.
 local module = {}
 
-module._ENV = "LuaJIT"
--- module._ENV = "Roblox"
-module._VERSION = tonumber(_VERSION:match("%d+%.%d+")) or 0
-
+if Environment.Runner ~= "LuaNoGlobal" then
+    ---@private
+    module._VERSION = tonumber(_VERSION:match("%d+%.%d+")) or 0
+else
+    -- LuaNoGlobal basically assumes this Lua VM has no magic global values
+    ---@private
+    module._VERSION = 5.1
+end
+---@private
 module._ACCESS = {
-	tableUnpack = module._VERSION >= 5.2
+    tableUnpack = module._VERSION >= 5.2
 }
 
+-- Functions
 module.table = {}
 module.table.join = function(tablee, seperator)
 	return table.concat(tablee, seperator)
 end
 module.table.unpack = function(tablee, i, j)
-	if module._ENV == "Roblox" then
-		return table.unpack(tablee, i, j)
-	end
-
 	if module._ACCESS.tableUnpack then
 		return table.unpack(tablee, i, j)
 	else
@@ -138,12 +144,6 @@ module.table.meetsLastIndex = function(array, callback)
 	return nil
 end
 module.table.includes = function(array, searchElement, fromIndex)
-    if module._ENV == "Roblox" then
-        ---@diagnostic disable: undefined-field
-        return table.find(array, searchElement, fromIndex) ~= nil
-        ---@diagnostic enable: undefined-field
-    end
-
 	return module.table.find(array, searchElement, fromIndex) ~= nil
 end
 module.table.keys = function(array)
@@ -289,27 +289,6 @@ module.logic.test = function(condition, a, b)
 	else
 		return b
 	end
-end
-
-if module._ENV == "Roblox" then
-    ---@diagnostic disable: undefined-global
-    module.logic.waitForUntil = function(callback, untilSeconds)
-    	local timePassed = false
-    	local functionDone = false
-    	task.spawn(function()
-    		task.wait(untilSeconds)
-    		timePassed = true
-    	end)
-    	task.spawn(function()
-    		callback()
-    		functionDone = true
-    	end)
-
-    	while not (timePassed or functionDone) do
-    		task.wait()
-    	end
-    end
-    ---@diagnostic enable: undefined-global
 end
 
 return module
