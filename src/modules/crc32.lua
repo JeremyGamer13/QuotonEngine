@@ -1,3 +1,6 @@
+-- Basic module to generate CRC32 checksums.
+local Crc32 = {}
+
 local CRC_TABLE = {
     0x00000000,
     0x77073096,
@@ -257,7 +260,7 @@ local CRC_TABLE = {
     0x2D02EF8D,
 }
 
-local function crc32(str)
+function Crc32:GenerateChecksumFromString(str)
     local crc = 0xFFFFFFFF
     local bytes = {str:byte(1, #str)}
 
@@ -269,4 +272,4 @@ local function crc32(str)
     return crc % 4294967296
 end
 
-return crc32
+return Crc32

@@ -9,7 +9,9 @@ local FileService = require("src.services.file")
 
 local RayLib = require("raylib")
 local RayLua = require("raylua")
+local libset = require("src.modules.libset")
 local Enum = require("src.modules.enum")
+local BitOp = require("src.modules.bitop")
 
 -- This is one of the only times a user script is loaded outside of user code.
 -- The user can run their own functions to run when the game is starting up.
@@ -17,8 +19,13 @@ local ScriptSetup = require("src.scripts.setup")
 local SetupConfig = ScriptSetup:InitializingPreProgram()
 SetupService.InitialConfig = SetupConfig
 
+-- set resolution
+RenderingService:SetResolution(
+    SetupConfig.WindowResolutionX,
+    SetupConfig.WindowResolutionY
+)
 -- create window
-RayLib.SetConfigFlags(SetupConfig.WindowConfigFlags)
+RayLib.SetConfigFlags(BitOp.Or(libset.table.unpack(SetupConfig.WindowConfigFlags)))
 RayLib.InitWindow(
     RenderingService._renderSettings.ResolutionX,
     RenderingService._renderSettings.ResolutionY,

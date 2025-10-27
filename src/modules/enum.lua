@@ -2,7 +2,10 @@ local RayLib = require("raylib")
 local RayLua = require("raylua")
 local libset = require("src.modules.libset")
 
-local module = {
+-- Enums represent values that may be commonly used in Quoton. You are intended to use these as inputs to other functions, for example.
+--
+-- Never use the literal value of an Enum or your code **will** break in the future.
+local Enum = {
     AlignPosition = {
         Left = "left",
         Right = "right",
@@ -14,7 +17,10 @@ local module = {
         -- Best compatibility with all systems.
         Sound = "sound",
 
-        -- Intended RayLib Music API but may cause unexpected crashes and stuttering with certain audio files or certain platforms. DO NOT USE THIS AUDIO TYPE IN FULL PROJECTS.
+        -- EXPERIMENTAL: Intended RayLib Music API but may cause unexpected crashes and stuttering with certain audio files or certain platforms.
+        --
+        -- DO NOT USE THIS AUDIO TYPE IN FULL PROJECTS.
+        --
         --[[
             NOTE: It seems like other people are unable to get this working consistently either.
             If someone gets it working with any audio file in a built project, this will become a TODO.
@@ -23,7 +29,10 @@ local module = {
         ---@deprecated
         Music = "music",
 
-        -- EXPERIMENTAL: Not fully implemented at this time. DO NOT USE THIS AUDIO TYPE IN FULL PROJECTS.
+        -- EXPERIMENTAL: Not fully implemented at this time.
+        --
+        -- DO NOT USE THIS AUDIO TYPE IN FULL PROJECTS.
+        --
         -- TODO: Try to get raw audio working better.
         ---@deprecated
         Raw = "raw",
@@ -281,4 +290,4 @@ local module = {
     },
 }
 
-return module
+return Enum

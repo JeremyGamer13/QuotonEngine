@@ -268,9 +268,6 @@ end
 module.math.lerp = function(current, target, amount)
 	return current + amount * (target - current)
 end
-module.math.addPerSec = function(seconds, fps)
-	return 1 / (fps * seconds)
-end
 module.math.distance = function(point1, point2)
 	local dx = point2.x - point1.x
 	local dy = point2.y - point1.y

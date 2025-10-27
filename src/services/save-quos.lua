@@ -1,10 +1,11 @@
 local libset = require("src.modules.libset")
-local getChecksum = require("src.modules.crc32")
+
+local Crc32 = require("src.modules.crc32")
 
 -- Lua implementation of the .quos (Quoton Save) format
-local module = {}
+local QuotonSave = {}
 
-module.SyntaxConfig = {
+QuotonSave.SyntaxConfig = {
     CHECKSUM_SEPERATOR = ",",
     SEPERATOR = ";",
     NIL = "/",
@@ -20,7 +21,7 @@ module.SyntaxConfig = {
     },
 }
 
-function module:GetSyntaxType(value)
+function QuotonSave:GetSyntaxType(value)
     if value == nil then
         return self.SyntaxConfig.TYPING.NIL
     end
@@ -39,7 +40,7 @@ function module:GetSyntaxType(value)
     end
 end
 
-function module:EncodeToSyntaxType(value)
+function QuotonSave:EncodeToSyntaxType(value)
     local syntaxType = self:GetSyntaxType(value)
     if syntaxType == self.SyntaxConfig.TYPING.STRING or syntaxType == self.SyntaxConfig.TYPING.NUMBER then
         return tostring(value)
@@ -55,7 +56,7 @@ function module:EncodeToSyntaxType(value)
         return self.SyntaxConfig.NIL
     end
 end
-function module:DecodeFromSyntaxType(type, text)
+function QuotonSave:DecodeFromSyntaxType(type, text)
     if type == self.SyntaxConfig.TYPING.STRING then
         return tostring(text)
     elseif type == self.SyntaxConfig.TYPING.NUMBER then
@@ -73,7 +74,7 @@ function module:DecodeFromSyntaxType(type, text)
     end
 end
 
-function module:ReadString(text, recursive, hasChecksum)
+function QuotonSave:ReadString(text, recursive, hasChecksum)
     local actualTable = {}
 
     if not recursive and hasChecksum then
@@ -84,7 +85,7 @@ function module:ReadString(text, recursive, hasChecksum)
 
         local checksum = string.sub(text, 1, endIdx - 1)
         local normalSave = string.sub(text, endIdx + 1)
-        if tonumber(checksum) ~= getChecksum(normalSave) then
+        if tonumber(checksum) ~= Crc32:GenerateChecksumFromString(normalSave) then
             return error("Checksum does not match save")
         end
 
@@ -139,7 +140,7 @@ function module:ReadString(text, recursive, hasChecksum)
 
     return actualTable
 end
-function module:CreateString(table, recursive, hasChecksum)
+function QuotonSave:CreateString(table, recursive, hasChecksum)
     local outputSave = ""
 
     if not recursive and not table["$version"] then
@@ -162,11 +163,11 @@ function module:CreateString(table, recursive, hasChecksum)
     end
 
     if not recursive and hasChecksum then
-        local checksum = getChecksum(outputSave)
+        local checksum = Crc32:GenerateChecksumFromString(outputSave)
         outputSave = checksum .. self.SyntaxConfig.CHECKSUM_SEPERATOR .. outputSave
     end
 
     return outputSave
 end
 
-return module
+return QuotonSave

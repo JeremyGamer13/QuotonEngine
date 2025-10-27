@@ -1,7 +1,6 @@
 -- THIS IS A CORE SCRIPT, You can edit the script and behavior of the functions, but DO NOT DELETE THE SCRIPT, OR IT'S FUNCTIONS!
 -- Also make sure that all functions originally here return the same expected values.
 local Enum = require("src.modules.enum")
-local bit = require("bit")
 
 local SetupService = require("src.services.setup")
 local RenderingService = require("src.services.rendering")
@@ -11,8 +10,8 @@ local module = {}
 -- Returns an array of require()'d scripts. Will be sent to the setup service.
 function module:ImportGameScripts()
     return {
-        require("src.scripts.test"),
-        require("src.scripts.gamepadtest"),
+        require("src.scripts.tests.test"),
+        require("src.scripts.tests.gamepadtest"),
     }
 end
 
@@ -67,7 +66,10 @@ function module:InitializingPreProgram()
         GamepadAxisFix = true,
 
         -- Changes RayLib's ConfigFlags. Recommended to stay at defaults.
-        WindowConfigFlags = bit.bor(Enum.ConfigFlags.WindowResizable, Enum.ConfigFlags.MSAA4xHint),
+        WindowConfigFlags = {
+            Enum.ConfigFlags.WindowResizable,
+            Enum.ConfigFlags.MSAA4xHint
+        },
 
         -- Maximizes the window on startup.
         WindowMaximize = false,
@@ -89,15 +91,12 @@ function module:InitializingPreProgram()
         -- The title of the game window.
         WindowTitle = "QuotonGame",
     }
+
+    -- Any script loaded before can define a ModifyConfig function to modify your current config.
     local setupConfig = SetupService:GetSetupSettings(defaultConfig)
-
-    -- Other scripts can hook into the setup and change stuff as they need to.
+    -- Other scripts can hook into the setup and change stuff as they need to, based on the setupConfig provided.
+    -- These scripts should define a SetCustomSetup function to do this.
     SetupService:RunCustomSetup(setupConfig)
-
-    RenderingService:SetResolution(
-        setupConfig.WindowResolutionX,
-        setupConfig.WindowResolutionY
-    )
 
     return setupConfig
 end
