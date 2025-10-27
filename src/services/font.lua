@@ -1,4 +1,4 @@
-local FileService = require("src.services.file")
+-- local FileService = require("src.services.file")
 local SetupService = require("src.services.setup")
 
 local RayLib = require("raylib")
@@ -60,7 +60,7 @@ function module:Load(fontList)
     for _, fontPath in ipairs(fontList) do
         if not module:IsFontPathSupported(fontPath) then goto continue end
 
-        local fileName = FileService:PathToFileName(fontPath)
+        local fileName = ""
         local cleanFileName = fileName:gsub("%.%w+$", "")
         local fontName = cleanFileName:match("^[^-]+")
 

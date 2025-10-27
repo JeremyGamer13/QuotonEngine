@@ -7,7 +7,7 @@ local SetupService = require("src.services.setup")
 local AudioService = require("src.services.audio")
 local InputService = require("src.services.input")
 local FontService = require("src.services.font")
-local FileService = require("src.services.file")
+-- local FileService = require("src.services.file")
 
 local libset = require("src.modules.libset")
 local Enum = require("src.modules.enum")
@@ -180,7 +180,7 @@ end
 -- unload assets
 AudioService:Unload()
 SetupService:Unload()
-FileService:Unload()
+-- FileService:Unload()
 FontService:Unload()
 RayLib.UnloadRenderTexture(RenderTexture)
 RayLib.CloseAudioDevice()
