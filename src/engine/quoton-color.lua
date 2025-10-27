@@ -1,4 +1,3 @@
-local Quoton = require("src.engine.quoton")
 local QuotonLibrary = require("src.engine.quoton-library")
 
 local Environment = require("src.modules.env")
@@ -8,6 +7,7 @@ local Environment = require("src.modules.env")
 ---@field G number Green value 0-255
 ---@field B number Blue value 0-255
 ---@field A number Alpha value 0-255
+---@field private _Struct any
 -- An RGB color with an alpha channel.
 local Color = {}
 
@@ -17,8 +17,9 @@ if Environment.Library == "raylib-tsnake41" then
     ---@type fun(r:number, g:number, b:number, a:number?): Color
     -- Creates a new Color with the specified RGB colors. Alpha channel defaults to 255 if not provided.
     function Color.New(r, g, b, a)
-        local self = setmetatable({}, Color)
-        self._Struct = RayLib.new("Color", r, g, b, a or 255)
+        local self = setmetatable({
+            _Struct = RayLib.new("Color", r, g, b, a or 255)
+        }, Color)
         return self
     end
 
@@ -32,6 +33,8 @@ if Environment.Library == "raylib-tsnake41" then
             return rawget(self, "_Struct").b
         elseif key == "A" then
             return rawget(self, "_Struct").a
+        elseif key == "_Struct" then
+            return rawget(self, "_Struct")
         end
     end
     -- setter

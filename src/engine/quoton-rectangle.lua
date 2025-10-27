@@ -1,4 +1,3 @@
-local Quoton = require("src.engine.quoton")
 local QuotonLibrary = require("src.engine.quoton-library")
 
 local Environment = require("src.modules.env")
@@ -8,6 +7,7 @@ local Environment = require("src.modules.env")
 ---@field Y number Rectangle top-left corner position y
 ---@field Width number Rectangle width
 ---@field Height number Rectangle height
+---@field private _Struct any
 -- A rectangle with a top-left corner X position, top-left corner Y position, width and height.
 local Rectangle = {}
 
@@ -17,8 +17,9 @@ if Environment.Library == "raylib-tsnake41" then
     ---@type fun(x:number, y:number, width:number, height:number): Rectangle
     -- Creates a new Rectangle with the specified X, Y, width and height.
     function Rectangle.New(x, y, width, height)
-        local self = setmetatable({}, Rectangle)
-        self._Struct = RayLib.new("Rectangle", x, y, width, height)
+        local self = setmetatable({
+            _Struct = RayLib.new("Rectangle", x, y, width, height)
+        }, Rectangle)
         return self
     end
     -- getter
@@ -31,6 +32,8 @@ if Environment.Library == "raylib-tsnake41" then
             return rawget(self, "_Struct").width
         elseif key == "Height" then
             return rawget(self, "_Struct").height
+        elseif key == "_Struct" then
+            return rawget(self, "_Struct")
         end
     end
     -- setter

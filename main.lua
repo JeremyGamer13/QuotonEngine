@@ -31,12 +31,13 @@ Quoton:SetTargetFPS(SetupConfig.FrameRateMax) -- TODO: Shouldnt this be part of 
 -- TODO: Implement ExitKey stuff for Quoton here
 
 if SetupConfig.WindowScreenResize then
-    local screenResolution = RenderingService:GetScreenResolution()
+    local monitor = RenderingService:GetCurrentMonitor()
+    local screenResolution = RenderingService:GetMonitorBounds(monitor)
     local appropriateWindowRes = RenderingService:GetAppropriateResolution(not SetupConfig.WindowScreenResizeFill)
     RenderingService:SetWindowSize(appropriateWindowRes.Width, appropriateWindowRes.Height)
     RenderingService:SetWindowPosition(
-        (screenResolution.width / 2) - (appropriateWindowRes.Width / 2),
-        (screenResolution.height / 2) - (appropriateWindowRes.Height / 2)
+        (screenResolution.Width / 2) - (appropriateWindowRes.Width / 2),
+        (screenResolution.Height / 2) - (appropriateWindowRes.Height / 2)
     )
 
     if SetupConfig.WindowScreenResizeResolution then
@@ -89,32 +90,32 @@ TransmitterService:ListenFor("PROCESS_EXIT", function()
     ForceWindowClose = true
 end)
 while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
-    local windowSize = RenderingService:GetWindowResolution()
+    local windowSize = RenderingService:GetWindowBounds()
 
     local renderDestination = {
         x = 0,
         y = 0,
-        width = windowSize.width,
-        height = windowSize.height
+        width = windowSize.Width,
+        height = windowSize.Height
     }
     if RenderingService._renderSettings.FillMode == Enum.FillMode.Crop then
-        local ratioX = windowSize.width / RenderingService._renderSettings.ResolutionX
-        local ratioY = windowSize.height / RenderingService._renderSettings.ResolutionY
+        local ratioX = windowSize.Width / RenderingService._renderSettings.ResolutionX
+        local ratioY = windowSize.Height / RenderingService._renderSettings.ResolutionY
         local scale = math.max(ratioX, ratioY)
 
         renderDestination.width = RenderingService._renderSettings.ResolutionX * scale
         renderDestination.height = RenderingService._renderSettings.ResolutionY * scale
-        renderDestination.x = (windowSize.width - renderDestination.width) / 2
-        renderDestination.y = (windowSize.height - renderDestination.height) / 2
+        renderDestination.x = (windowSize.Width - renderDestination.width) / 2
+        renderDestination.y = (windowSize.Height - renderDestination.height) / 2
     elseif RenderingService._renderSettings.FillMode == Enum.FillMode.Fit then
-        local ratioX = windowSize.width / RenderingService._renderSettings.ResolutionX
-        local ratioY = windowSize.height / (RenderingService._renderSettings.ResolutionY)
+        local ratioX = windowSize.Width / RenderingService._renderSettings.ResolutionX
+        local ratioY = windowSize.Height / (RenderingService._renderSettings.ResolutionY)
         local scale = math.min(ratioX, ratioY)
 
         renderDestination.width = RenderingService._renderSettings.ResolutionX * scale
         renderDestination.height = (RenderingService._renderSettings.ResolutionY) * scale
-        renderDestination.x = (windowSize.width - renderDestination.width) / 2
-        renderDestination.y = (windowSize.height - renderDestination.height) / 2
+        renderDestination.x = (windowSize.Width - renderDestination.width) / 2
+        renderDestination.y = (windowSize.Height - renderDestination.height) / 2
     end
 
     -- give input service the destination since otherwise position would be wrong
@@ -165,11 +166,11 @@ while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
     }
     RayLib.DrawTexturePro(
         RenderTexture.texture,
-        renderTexConfig.crop,
-        renderTexConfig.destination,
-        renderTexConfig.position,
+        renderTexConfig.crop._Struct,
+        renderTexConfig.destination._Struct,
+        renderTexConfig.position._Struct,
         RenderingService._renderSettings.Rotation,
-        RenderingService._renderSettings.ScreenTint
+        RenderingService._renderSettings.ScreenTint._Struct
     )
 
     RayLib.EndDrawing()

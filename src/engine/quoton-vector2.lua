@@ -1,4 +1,3 @@
-local Quoton = require("src.engine.quoton")
 local QuotonLibrary = require("src.engine.quoton-library")
 
 local Environment = require("src.modules.env")
@@ -6,6 +5,7 @@ local Environment = require("src.modules.env")
 ---@class Vector2
 ---@field X number The X coordinate of this Vector2.
 ---@field Y number The Y coordinate of this Vector2.
+---@field private _Struct any
 -- A vector with an X and Y coordinate.
 local Vector2 = {}
 
@@ -15,8 +15,9 @@ if Environment.Library == "raylib-tsnake41" then
     ---@type fun(x:number, y:number): Vector2
     -- Creates a new Vector2 with the specified X and Y coordinate.
     function Vector2.New(x, y)
-        local self = setmetatable({}, Vector2)
-        self._Struct = RayLib.new("Vector2", x, y)
+        local self = setmetatable({
+            _Struct = RayLib.new("Vector2", x, y)
+        }, Vector2)
         return self
     end
     -- getter
@@ -25,6 +26,8 @@ if Environment.Library == "raylib-tsnake41" then
             return rawget(self, "_Struct").x
         elseif key == "Y" then
             return rawget(self, "_Struct").y
+        elseif key == "_Struct" then
+            return rawget(self, "_Struct")
         end
     end
     -- setter

@@ -110,7 +110,7 @@ local Enum = {
         HighDPI = QuotonEnum.ConfigFlags.HighDPI, -- Only supported on initialization; Allows this window to support High DPI. Only supported for desktop platforms.
 
         FullscreenMode = QuotonEnum.ConfigFlags.VSyncHint, -- Run the program in fullscreen. Only supported for desktop platforms.
-        BorderlessMode = QuotonEnum.ConfigFlags.VSyncHintOWED_MODE, -- Run the program in borderless windowed mode. Only supported for desktop platforms.
+        BorderlessMode = QuotonEnum.ConfigFlags.VSyncHintOWED_MODE, -- Run the program in borderless windowed mode. Only supported for desktop platforms, not supported in all libraries.
 
         WindowResizable = QuotonEnum.ConfigFlags.WindowResizable, -- Makes the window resizable. Only supported for desktop platforms.
         WindowUndecorated = QuotonEnum.ConfigFlags.WindowUndecorated, -- Removes the window's frame & topbar. Only supported for desktop platforms.

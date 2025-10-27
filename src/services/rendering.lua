@@ -15,7 +15,7 @@ RenderingService._renderSettings = {
     FillMode = Enum.FillMode.Fit,
     Rotation = 0,
 
-    ScreenTint = QuotonLibrary.WHITE, -- TODO: replace this
+    ScreenTint = Enum.Color.White,
     ScreenFilter = Enum.FilterMode.Trilinear,
 }
 ---@private
@@ -42,10 +42,11 @@ end
 
 -- Returns the best width & height for the user's screen setup. Specify `true` to get 1 resolution below.
 function RenderingService:GetAppropriateResolution(getBelow)
-    local screenRes = self:GetScreenResolution()
+    local monitor = self:GetCurrentMonitor()
+    local screenRes = self:GetMonitorBounds(monitor)
 
     -- check if we are using 4:3 or 16:9
-    local aspectRatio = screenRes.width / screenRes.height
+    local aspectRatio = screenRes.Width / screenRes.Height
     local aspectRatio43 = 4 / 3
     local aspectRatio169 = 16 / 9
 
@@ -69,7 +70,7 @@ function RenderingService:GetAppropriateResolution(getBelow)
     local currentMult = 2
 
     -- increase in mults of 2 until one number is too big
-    while (startX * currentMult) < screenRes.width and (startY * currentMult) < screenRes.height do
+    while (startX * currentMult) < screenRes.Width and (startY * currentMult) < screenRes.Height do
         if not getBelow then
             currentMult = currentMult + 1
         end
@@ -159,7 +160,7 @@ if Environment.Library == "raylib-tsnake41" then
     local RayLib = QuotonLibrary
     -- Draws a rectangle with a specific color using the given rectangle as bounds.
     function RenderingService:DrawRectangle(rect, color)
-        RayLib.DrawRectangleRec(rect, color)
+        RayLib.DrawRectangleRec(rect._Struct, color._Struct)
     end
 end
 -- Same as DrawRectangle but you need to provide each parameter of the rectangle individually.
@@ -173,7 +174,7 @@ if Environment.Library == "raylib-tsnake41" then
     local RayLib = QuotonLibrary
     -- Draws a circle with a specific color using the provided vector as the center point.
     function RenderingService:DrawCircle(center, radius, color)
-        RayLib.DrawCircleV(center, radius, color)
+        RayLib.DrawCircleV(center._Struct, radius, color._Struct)
     end
 end
 -- Same as DrawCircle but you need to provide each parameter of the vector individually.
@@ -208,7 +209,7 @@ if Environment.Library == "raylib-tsnake41" then
         y = y - (size * vAlign)
 
         local pos = Vector2.New(x, y)
-        RayLib.DrawTextEx(font, text, pos, size, 1, color)
+        RayLib.DrawTextEx(font, text, pos._Struct, size, 1, color._Struct)
     end
 end
 -- Repeatedly draws the text around the position provided to create an outline. Use DrawText after to draw the real text.
@@ -257,7 +258,7 @@ if Environment.Library == "raylib-tsnake41" then
 
         local srcRect = Rectangle.New(0, 0, texture.width, texture.height)
         local destRect = Rectangle.New(finalX, finalY, w, h)
-        RayLib.DrawTexturePro(texture, srcRect, destRect, Vector2.New(originX, originY), r, color)
+        RayLib.DrawTexturePro(texture, srcRect._Struct, destRect._Struct, Vector2.New(originX, originY)._Struct, r, color._Struct)
     end
 end
 -- Draws a texture, allows you to configure the width, height, and rotation.

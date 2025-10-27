@@ -11,7 +11,7 @@ if Environment.Library == "raylib-tsnake41" then
             AllowInterlacedVideo = RayLib.FLAG_INTERLACED_HINT,
             HighDPI = RayLib.FLAG_WINDOW_HIGHDPI,
             FullscreenMode = RayLib.FLAG_FULLSCREEN_MODE,
-            BorderlessMode = RayLib.FLAG_BORDERLESS_WINDOWED_MODE,
+            BorderlessMode = "BorderlessMode", -- not supported in this library
             WindowResizable = RayLib.FLAG_WINDOW_RESIZABLE,
             WindowUndecorated = RayLib.FLAG_WINDOW_UNDECORATED,
             WindowHidden = RayLib.FLAG_WINDOW_HIDDEN,
