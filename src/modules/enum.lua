@@ -14,26 +14,20 @@ local Enum = {
         Center = "center",
     },
     AudioType = {
-        -- Best compatibility with all systems.
+        -- Best compatibility with all systems and libraries, but limits audio control.
         Sound = "sound",
 
-        -- EXPERIMENTAL: Intended RayLib Music API but may cause unexpected crashes and stuttering with certain audio files or certain platforms.
+        -- Allows for finer audio control.
         --
-        -- DO NOT USE THIS AUDIO TYPE IN FULL PROJECTS.
-        --
-        --[[
-            NOTE: It seems like other people are unable to get this working consistently either.
-            If someone gets it working with any audio file in a built project, this will become a TODO.
-            Source: raylib support discord
-        ]]
+        -- Unsupported for `raylib-tsnake`.
         ---@deprecated
         Music = "music",
 
+        -- Allows for audio data to be created and loaded at runtime.
+        --
         -- EXPERIMENTAL: Not fully implemented at this time.
         --
-        -- DO NOT USE THIS AUDIO TYPE IN FULL PROJECTS.
-        --
-        -- TODO: Try to get raw audio working better.
+        -- Unsupported for `raylib-tsnake`.
         ---@deprecated
         Raw = "raw",
     },

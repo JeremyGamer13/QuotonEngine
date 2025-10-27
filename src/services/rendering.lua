@@ -270,4 +270,19 @@ function RenderingService:DrawTextureWH(texture, x, y, w, h, color, hAlign, vAli
     self:DrawTextureWHR(texture, x, y, w, h, 0, color, hAlign, vAlign)
 end
 
+-- RenderTextures
+RenderingService.RenderTexture = {}
+if Environment.Library == "raylib-tsnake41" then
+    local RayLib = QuotonLibrary
+    -- For RayLib we will have to make our own deloading
+    local _toDeloadLater = {}
+    local function Deload()
+        
+    end
+    -- Creates a new render texture.
+    function RenderingService.RenderTexture.New()
+        
+    end
+end
+
 return RenderingService
