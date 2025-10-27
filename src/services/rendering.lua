@@ -1,5 +1,5 @@
-local RayLib = require("raylib")
-local RayLua = require("raylua")
+local Quoton = require("src.engine.quoton")
+
 local Enum = require("src.modules.enum")
 
 local module = {}

@@ -1,3 +1,5 @@
+local Quoton = require("src.engine.quoton")
+
 local TransmitterService = require("src.services.transmitter")
 local RenderingService = require("src.services.rendering")
 local RuntimeService = require("src.services.runtime")
@@ -7,11 +9,8 @@ local InputService = require("src.services.input")
 local FontService = require("src.services.font")
 local FileService = require("src.services.file")
 
-local RayLib = require("raylib")
-local RayLua = require("raylua")
 local libset = require("src.modules.libset")
 local Enum = require("src.modules.enum")
-local BitOp = require("src.modules.bitop")
 
 -- This is one of the only times a user script is loaded outside of user code.
 -- The user can run their own functions to run when the game is starting up.
@@ -19,22 +18,15 @@ local ScriptSetup = require("src.scripts.setup")
 local SetupConfig = ScriptSetup:InitializingPreProgram()
 SetupService.InitialConfig = SetupConfig
 
--- set resolution
+-- set default resolution
 RenderingService:SetResolution(
     SetupConfig.WindowResolutionX,
     SetupConfig.WindowResolutionY
 )
--- create window
-RayLib.SetConfigFlags(BitOp.Or(libset.table.unpack(SetupConfig.WindowConfigFlags)))
-RayLib.InitWindow(
-    RenderingService._renderSettings.ResolutionX,
-    RenderingService._renderSettings.ResolutionY,
-    SetupConfig.WindowTitle
-)
-RayLib.SetTargetFPS(SetupConfig.FrameRateMax)
-if SetupConfig.DisableKeyExit then
-    RayLib.SetExitKey(RayLib.KEY_NULL)
-end
+-- setup the game engine
+Quoton:Initialize(SetupConfig.WindowConfigFlags, SetupConfig)
+Quoton:SetTargetFPS(SetupConfig.FrameRateMax)
+-- TODO: Implement ExitKey stuff for Quoton here
 
 if SetupConfig.WindowScreenResize then
     local screenResolution = RenderingService:GetScreenResolution()
