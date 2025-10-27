@@ -1,82 +1,47 @@
-local Quoton = require("src.engine.quoton")
+local QuotonLibrary = require("src.engine.quoton-library")
+local Vector2 = require("src.engine.quoton-vector2")
+local Rectangle = require("src.engine.quoton-rectangle")
 
 local Enum = require("src.modules.enum")
+local Environment = require("src.modules.env")
 
-local module = {}
+local RenderingService = {}
 
 ---@private
-module._renderSettings = {
+RenderingService._renderSettings = {
     ResolutionX = 1280,
     ResolutionY = 720,
 
     FillMode = Enum.FillMode.Fit,
     Rotation = 0,
 
-    ScreenTint = RayLib.WHITE,
+    ScreenTint = QuotonLibrary.WHITE, -- TODO: replace this
     ScreenFilter = Enum.FilterMode.Trilinear,
 }
 ---@private
-module._flags = {
+RenderingService._flags = {
     shouldReloadRenTexture = false,
 }
 ---@private
-module._state = {
+RenderingService._state = {
     texture = nil,
     font = nil,
 }
 
-function module:GetResolution()
+function RenderingService:GetResolution()
     return {
         width = self._renderSettings.ResolutionX,
         height = self._renderSettings.ResolutionY
     }
 end
-function module:SetResolution(width, height)
+function RenderingService:SetResolution(width, height)
     self._renderSettings.ResolutionX = width
     self._renderSettings.ResolutionY = height
     self._flags.shouldReloadRenTexture = true
 end
 
-function module:GetRotation()
-    return self._renderSettings.Rotation
-end
-function module:SetRotation(rotation)
-    self._renderSettings.Rotation = rotation
-end
-function module:GetFillMode()
-    return self._renderSettings.FillMode
-end
-function module:SetFillMode(fillMode)
-    self._renderSettings.FillMode = fillMode
-end
-function module:GetScreenFilter()
-    return self._renderSettings.ScreenFilter
-end
-function module:SetScreenFilter(newFilter)
-    self._renderSettings.ScreenFilter = newFilter
-    self._flags.shouldReloadRenTexture = true
-end
-function module:GetTint()
-    return self._renderSettings.ScreenTint
-end
-function module:SetTint(color)
-    self._renderSettings.ScreenTint = color
-end
-
-function module:GetWindowResolution()
-    return {
-        width = RayLib.GetScreenWidth(),
-        height = RayLib.GetScreenHeight(),
-    }
-end
-function module:GetScreenResolution()
-    local monitor = RayLib.GetCurrentMonitor()
-    return {
-        width = RayLib.GetMonitorWidth(monitor),
-        height = RayLib.GetMonitorHeight(monitor),
-    }
-end
-function module:GetAppropriateResolution(getBelow) -- Returns the best width & height for the user's screen setup. Specify true to get 1 resolution below.
+-- Returns the best width & height for the user's screen setup. Specify `true` to get 1 resolution below.
+function RenderingService:GetAppropriateResolution(getBelow)
     local screenRes = self:GetScreenResolution()
 
     -- check if we are using 4:3 or 16:9
@@ -115,13 +80,57 @@ function module:GetAppropriateResolution(getBelow) -- Returns the best width & h
         end
     end
 
-    return {
-        width = targetX,
-        height = targetY,
-    }
+    return Rectangle.New(0, 0, targetX, targetY)
 end
 
-function module:DrawText(font, text, x, y, color, size, hAlign, vAlign)
+function RenderingService:GetRotation()
+    return self._renderSettings.Rotation
+end
+function RenderingService:SetRotation(rotation)
+    self._renderSettings.Rotation = rotation
+end
+function RenderingService:GetFillMode()
+    return self._renderSettings.FillMode
+end
+function RenderingService:SetFillMode(fillMode)
+    self._renderSettings.FillMode = fillMode
+end
+function RenderingService:GetScreenFilter()
+    return self._renderSettings.ScreenFilter
+end
+function RenderingService:SetScreenFilter(newFilter)
+    self._renderSettings.ScreenFilter = newFilter
+    self._flags.shouldReloadRenTexture = true
+end
+function RenderingService:GetTint()
+    return self._renderSettings.ScreenTint
+end
+function RenderingService:SetTint(color)
+    self._renderSettings.ScreenTint = color
+end
+
+function RenderingService:GetWindowBounds()
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        local windowPosition = RayLib.GetWindowPosition()
+        return Rectangle.New(windowPosition.x, windowPosition.y, RayLib.GetScreenWidth(), RayLib.GetScreenHeight())
+    else
+        error("RenderingService:GetWindowBounds for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+function RenderingService:GetMonitorBounds(monitor)
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        local monitorPosition = RayLib.GetMonitorPosition(monitor)
+        return Rectangle.New(monitorPosition.x, monitorPosition.y, RayLib.GetMonitorWidth(monitor), RayLib.GetMonitorHeight(monitor))
+    else
+        error("RenderingService:GetMonitorBounds for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+
+function RenderingService:DrawText(font, text, x, y, color, size, hAlign, vAlign)
+    -- TODO: replace this
+    local RayLib = QuotonLibrary
     if not color then
         color = RayLib.WHITE
     end
@@ -141,10 +150,12 @@ function module:DrawText(font, text, x, y, color, size, hAlign, vAlign)
     end
     y = y - (size * vAlign)
 
-    local pos = RayLua.Vector2(x, y)
+    local pos = Vector2.New(x, y)
     RayLib.DrawTextEx(font, text, pos, size, 1, color)
 end
-function module:DrawTextOutline(font, text, x, y, color, size, hAlign, vAlign)
+function RenderingService:DrawTextOutline(font, text, x, y, color, size, hAlign, vAlign)
+    -- TODO: replace this
+    local RayLib = QuotonLibrary
     if not color then
         color = RayLib.BLACK
     end
@@ -155,7 +166,9 @@ function module:DrawTextOutline(font, text, x, y, color, size, hAlign, vAlign)
     self:DrawText(font, text, x - 1, y + 1, color, size, hAlign, vAlign)
 end
 
-function module:DrawTextureWHRO(texture, x, y, w, h, r, color, hAlign, vAlign, rotHAlign, rotVAlign)
+function RenderingService:DrawTextureWHRO(texture, x, y, w, h, r, color, hAlign, vAlign, rotHAlign, rotVAlign)
+    -- TODO: replace this
+    local RayLib = QuotonLibrary
     if not color then
         color = RayLib.WHITE
     end
@@ -183,15 +196,15 @@ function module:DrawTextureWHRO(texture, x, y, w, h, r, color, hAlign, vAlign, r
     local finalX = adjustedX + originX
     local finalY = adjustedY + originY
 
-    local srcRect = RayLua.Rectangle(0, 0, texture.width, texture.height)
-    local destRect = RayLua.Rectangle(finalX, finalY, w, h)
-    RayLib.DrawTexturePro(texture, srcRect, destRect, RayLua.Vector2(originX, originY), r, color)
+    local srcRect = Rectangle.New(0, 0, texture.width, texture.height)
+    local destRect = Rectangle.New(finalX, finalY, w, h)
+    RayLib.DrawTexturePro(texture, srcRect, destRect, Vector2.New(originX, originY), r, color)
 end
-function module:DrawTextureWHR(texture, x, y, w, h, r, color, hAlign, vAlign)
+function RenderingService:DrawTextureWHR(texture, x, y, w, h, r, color, hAlign, vAlign)
     self:DrawTextureWHRO(texture, x, y, w, h, r, color, hAlign, vAlign, hAlign, vAlign)
 end
-function module:DrawTextureWH(texture, x, y, w, h, color, hAlign, vAlign)
+function RenderingService:DrawTextureWH(texture, x, y, w, h, color, hAlign, vAlign)
     self:DrawTextureWHR(texture, x, y, w, h, 0, color, hAlign, vAlign)
 end
 
-return module
+return RenderingService

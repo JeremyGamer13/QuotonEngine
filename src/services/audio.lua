@@ -1,7 +1,10 @@
+local QuotonLibrary = require("src.engine.quoton-library")
+
 local EventService = require("src.services.event")
 local RuntimeService = require("src.services.runtime")
 
-local RayLib = require("raylib")
+-- TODO: replace this
+local RayLib = QuotonLibrary
 local libset = require("src.modules.libset")
 local Enum = require("src.modules.enum")
 

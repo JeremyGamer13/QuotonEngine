@@ -38,23 +38,24 @@ local Enum = {
         Raw = "raw",
     },
     ConfigFlags = {
-        VSyncHint = RayLib.FLAG_VSYNC_HINT, -- Unknown behavior/purpose
-        MSAA4xHint = RayLib.FLAG_MSAA_4X_HINT, -- Only supported on initialization; Enables Multi Sampling Anti Aliasing 4x
-        InterlacedHint = RayLib.FLAG_INTERLACED_HINT, -- Unknown behavior/purpose
+        VSyncHint = RayLib.FLAG_VSYNC_HINT, -- Try to enable V-Sync on the GPU. Only supported in raylib libraries.
+        MSAA4xHint = RayLib.FLAG_MSAA_4X_HINT, -- Only supported on initialization; Try to enable Multi Sampling Anti Aliasing 4x. Only supported in raylib libraries.
+        InterlacedHint = RayLib.FLAG_INTERLACED_HINT, -- Only supported on initialization; Try to enable interlaced video format. Only supported in raylib libraries.
+        WindowHighDPI = RayLib.FLAG_WINDOW_HIGHDPI, -- Only supported on initialization; Allows this window to support High DPI. Only supported for desktop platforms.
 
-        FullscreenMode = RayLib.FLAG_FULLSCREEN_MODE, -- Untested behavior/purpose, docs state it's broken & causes wrong scaling
+        FullscreenMode = RayLib.FLAG_FULLSCREEN_MODE, -- Run the program in fullscreen. Only supported for desktop platforms.
+        BorderlessMode = RayLib.FLAG_BORDERLESS_WINDOWED_MODE, -- Run the program in borderless windowed mode. Only supported for desktop platforms.
 
-        WindowResizable = RayLib.FLAG_WINDOW_RESIZABLE, -- Makes the window resizable
-        WindowUndecorated = RayLib.FLAG_WINDOW_UNDECORATED, -- Removes the window's frame & topbar
-        WindowHidden = RayLib.FLAG_WINDOW_HIDDEN, -- Makes the window not visible and not appear in the taskbar.
-        WindowMinimized = RayLib.FLAG_WINDOW_MINIMIZED, -- Only supported after initialization; Untested behavior/purpose
-        WindowMaximized = RayLib.FLAG_WINDOW_MAXIMIZED, -- Only supported after initialization; Untested behavior/purpose
-        WindowUnfocused = RayLib.FLAG_WINDOW_UNFOCUSED, -- Untested behavior/purpose
-        WindowTopMost = RayLib.FLAG_WINDOW_TOPMOST, -- Forces the window to stay on top of other windows.
-        WindowAlwaysRun = RayLib.FLAG_WINDOW_ALWAYS_RUN, -- Unknown behavior/purpose
-        WindowTransparent = RayLib.FLAG_WINDOW_TRANSPARENT, -- Only supported on initialization; Untested behavior/purpose
-        WindowHighDPI = RayLib.FLAG_WINDOW_HIGHDPI, -- Only supported on initialization; Untested behavior/purpose, docs state "errors after minimize-resize, fb size is recalculated"
-        WindowMousePassthrough = RayLib.FLAG_WINDOW_MOUSE_PASSTHROUGH, -- Makes mouse events pass through the window, making the window not receive them
+        WindowResizable = RayLib.FLAG_WINDOW_RESIZABLE, -- Makes the window resizable. Only supported for desktop platforms.
+        WindowUndecorated = RayLib.FLAG_WINDOW_UNDECORATED, -- Removes the window's frame & topbar. Only supported for desktop platforms.
+        WindowHidden = RayLib.FLAG_WINDOW_HIDDEN, -- Makes the window not visible and not appear in the taskbar. Only supported for desktop platforms.
+        WindowMinimized = RayLib.FLAG_WINDOW_MINIMIZED, -- Only supported after initialization; Minimize the window. Only supported for desktop platforms.
+        WindowMaximized = RayLib.FLAG_WINDOW_MAXIMIZED, -- Only supported after initialization; Maximize the window. Only supported for desktop platforms.
+        WindowUnfocused = RayLib.FLAG_WINDOW_UNFOCUSED, -- Set the window to not be focused, like you clicked off of it. Only supported for desktop platforms.
+        WindowTopMost = RayLib.FLAG_WINDOW_TOPMOST, -- Forces the window to stay on top of other windows. Only supported for desktop platforms.
+        WindowAlwaysRun = RayLib.FLAG_WINDOW_ALWAYS_RUN, -- Allow the window to run while minimized. Only supported for desktop platforms.
+        WindowTransparent = RayLib.FLAG_WINDOW_TRANSPARENT, -- Only supported on initialization; Allows a transparent window using a blank background color. Only supported for desktop platforms.
+        WindowMousePassthrough = RayLib.FLAG_WINDOW_MOUSE_PASSTHROUGH, -- Makes mouse events pass through the window, making the window not receive them. Only supported for desktop platforms.
     },
     EasingDir = {
         In = "in",
