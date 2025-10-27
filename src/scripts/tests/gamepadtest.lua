@@ -4,8 +4,6 @@ local AudioService = require("src.services.audio")
 local InputService = require("src.services.input")
 local FontService = require("src.services.font")
 
-local RayLib = require("raylib")
-local RayLua = require("raylua")
 local Enum = require("src.modules.enum")
 
 local script = {}

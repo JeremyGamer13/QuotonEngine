@@ -1,10 +1,10 @@
-local RayLib = require("raylib")
-local RayLua = require("raylua")
-local libset = require("src.modules.libset")
+local QuotonEnum = require("src.engine.quoton-enum")
+local Color = require("src.engine.quoton-color")
 
+---@enum Enum
 -- Enums represent values that may be commonly used in Quoton. You are intended to use these as inputs to other functions, for example.
 --
--- Never use the literal value of an Enum or your code **will** break in the future.
+-- Never use the literal value of an Enum or your code **will** break when switching platforms/libraries or updating your project.
 local Enum = {
     AlignPosition = {
         Left = "left",
@@ -37,25 +37,91 @@ local Enum = {
         ---@deprecated
         Raw = "raw",
     },
+    Color = {
+        White = Color.New(255, 255, 255),
+        Black = Color.New(0, 0, 0),
+
+        Red = Color.New(255, 0, 0),
+        Green = Color.New(0, 255, 0),
+        Blue = Color.New(0, 0, 255),
+
+        Yellow = Color.New(255, 255, 0),
+        Cyan = Color.New(0, 255, 255),
+        Magenta = Color.New(255, 0, 255),
+
+        LightGray = Color.New(192, 192, 192),
+        Gray = Color.New(128, 128, 128),
+        DarkGray = Color.New(64, 64, 64),
+
+        DarkRed = Color.New(139, 0, 0),
+        LightRed = Color.New(255, 102, 102),
+        DarkGreen = Color.New(0, 100, 0),
+        LightGreen = Color.New(144, 238, 144),
+        DarkBlue = Color.New(0, 0, 139),
+        LightBlue = Color.New(173, 216, 230),
+        DarkCyan = Color.New(0, 139, 139),
+        LightCyan = Color.New(224, 255, 255),
+        Purple = Color.New(128, 0, 128),
+        Violet = Color.New(148, 0, 211),
+        Pink = Color.New(255, 192, 203),
+        HotPink = Color.New(255, 105, 180),
+        Orange = Color.New(255, 165, 0),
+        DarkOrange = Color.New(255, 140, 0),
+        LightYellow = Color.New(255, 255, 224),
+        Brown = Color.New(139, 69, 19),
+        LightBrown = Color.New(205, 133, 63),
+        DarkBrown = Color.New(101, 67, 33),
+        Tan = Color.New(210, 180, 140),
+        Beige = Color.New(245, 245, 220),
+        Gold = Color.New(255, 215, 0),
+        Silver = Color.New(192, 192, 192),
+        Bronze = Color.New(205, 127, 50),
+        Maroon = Color.New(128, 0, 0),
+        Olive = Color.New(128, 128, 0),
+        Teal = Color.New(0, 128, 128),
+        Navy = Color.New(0, 0, 128),
+        Indigo = Color.New(75, 0, 130),
+        SkyBlue = Color.New(135, 206, 235),
+        SeaGreen = Color.New(46, 139, 87),
+        ForestGreen = Color.New(34, 139, 34),
+        Lime = Color.New(50, 205, 50),
+        Coral = Color.New(255, 127, 80),
+        Salmon = Color.New(250, 128, 114),
+        Khaki = Color.New(240, 230, 140),
+        Mint = Color.New(189, 252, 201),
+        Lavender = Color.New(230, 230, 250),
+        Plum = Color.New(221, 160, 221),
+        Turquoise = Color.New(64, 224, 208),
+        Azure = Color.New(240, 255, 255),
+        Crimson = Color.New(220, 20, 60),
+        Snow = Color.New(255, 250, 250),
+        Ivory = Color.New(255, 255, 240),
+        Honeydew = Color.New(240, 255, 240),
+        SlateGray = Color.New(112, 128, 144),
+        LightSlateGray = Color.New(119, 136, 153),
+        DarkSlateGray = Color.New(47, 79, 79),
+
+        Blank = Color.New(0, 0, 0, 0),
+    },
     ConfigFlags = {
-        VSyncHint = RayLib.FLAG_VSYNC_HINT, -- Try to enable V-Sync on the GPU. Only supported in raylib libraries.
-        MSAA4xHint = RayLib.FLAG_MSAA_4X_HINT, -- Only supported on initialization; Try to enable Multi Sampling Anti Aliasing 4x. Only supported in raylib libraries.
-        InterlacedHint = RayLib.FLAG_INTERLACED_HINT, -- Only supported on initialization; Try to enable interlaced video format. Only supported in raylib libraries.
-        WindowHighDPI = RayLib.FLAG_WINDOW_HIGHDPI, -- Only supported on initialization; Allows this window to support High DPI. Only supported for desktop platforms.
+        VSync = QuotonEnum.ConfigFlags.VSync, -- Try to enable V-Sync on the GPU. Only supported in raylib libraries.
+        MSAA4x = QuotonEnum.ConfigFlags.MSAA4x, -- Only supported on initialization; Try to enable Multi Sampling Anti Aliasing 4x. Only supported in raylib libraries.
+        AllowInterlacedVideo = QuotonEnum.ConfigFlags.EnableInterlacedVideo, -- Only supported on initialization; Try to enable interlaced video format. Only supported in raylib libraries.
+        HighDPI = QuotonEnum.ConfigFlags.HighDPI, -- Only supported on initialization; Allows this window to support High DPI. Only supported for desktop platforms.
 
-        FullscreenMode = RayLib.FLAG_FULLSCREEN_MODE, -- Run the program in fullscreen. Only supported for desktop platforms.
-        BorderlessMode = RayLib.FLAG_BORDERLESS_WINDOWED_MODE, -- Run the program in borderless windowed mode. Only supported for desktop platforms.
+        FullscreenMode = QuotonEnum.ConfigFlags.VSyncHint, -- Run the program in fullscreen. Only supported for desktop platforms.
+        BorderlessMode = QuotonEnum.ConfigFlags.VSyncHintOWED_MODE, -- Run the program in borderless windowed mode. Only supported for desktop platforms.
 
-        WindowResizable = RayLib.FLAG_WINDOW_RESIZABLE, -- Makes the window resizable. Only supported for desktop platforms.
-        WindowUndecorated = RayLib.FLAG_WINDOW_UNDECORATED, -- Removes the window's frame & topbar. Only supported for desktop platforms.
-        WindowHidden = RayLib.FLAG_WINDOW_HIDDEN, -- Makes the window not visible and not appear in the taskbar. Only supported for desktop platforms.
-        WindowMinimized = RayLib.FLAG_WINDOW_MINIMIZED, -- Only supported after initialization; Minimize the window. Only supported for desktop platforms.
-        WindowMaximized = RayLib.FLAG_WINDOW_MAXIMIZED, -- Only supported after initialization; Maximize the window. Only supported for desktop platforms.
-        WindowUnfocused = RayLib.FLAG_WINDOW_UNFOCUSED, -- Set the window to not be focused, like you clicked off of it. Only supported for desktop platforms.
-        WindowTopMost = RayLib.FLAG_WINDOW_TOPMOST, -- Forces the window to stay on top of other windows. Only supported for desktop platforms.
-        WindowAlwaysRun = RayLib.FLAG_WINDOW_ALWAYS_RUN, -- Allow the window to run while minimized. Only supported for desktop platforms.
-        WindowTransparent = RayLib.FLAG_WINDOW_TRANSPARENT, -- Only supported on initialization; Allows a transparent window using a blank background color. Only supported for desktop platforms.
-        WindowMousePassthrough = RayLib.FLAG_WINDOW_MOUSE_PASSTHROUGH, -- Makes mouse events pass through the window, making the window not receive them. Only supported for desktop platforms.
+        WindowResizable = QuotonEnum.ConfigFlags.WindowResizable, -- Makes the window resizable. Only supported for desktop platforms.
+        WindowUndecorated = QuotonEnum.ConfigFlags.WindowUndecorated, -- Removes the window's frame & topbar. Only supported for desktop platforms.
+        WindowHidden = QuotonEnum.ConfigFlags.WindowHidden, -- Makes the window not visible and not appear in the taskbar. Only supported for desktop platforms.
+        WindowMinimized = QuotonEnum.ConfigFlags.WindowMinimized, -- Only supported after initialization; Minimize the window. Only supported for desktop platforms.
+        WindowMaximized = QuotonEnum.ConfigFlags.WindowMaximized, -- Only supported after initialization; Maximize the window. Only supported for desktop platforms.
+        WindowUnfocused = QuotonEnum.ConfigFlags.WindowUnfocused, -- Set the window to not be focused, like you clicked off of it. Only supported for desktop platforms.
+        WindowTopMost = QuotonEnum.ConfigFlags.WindowTopMost, -- Forces the window to stay on top of other windows. Only supported for desktop platforms.
+        WindowAlwaysRun = QuotonEnum.ConfigFlags.WindowAlwaysRun, -- Allow the window to run while minimized. Only supported for desktop platforms.
+        WindowTransparent = QuotonEnum.ConfigFlags.WindowTransparent, -- Only supported on initialization; Allows a transparent window using a blank background color. Only supported for desktop platforms.
+        WindowMousePassthrough = QuotonEnum.ConfigFlags.WindowMousePassthrough, -- Makes mouse events pass through the window, making the window not receive them. Only supported for desktop platforms.
     },
     EasingDir = {
         In = "in",
@@ -81,213 +147,213 @@ local Enum = {
         Stretch = "stretch",
     },
     FilterMode = {
-        Point = RayLib.TEXTURE_FILTER_POINT,
-        Bilinear = RayLib.TEXTURE_FILTER_BILINEAR,
-        Trilinear = RayLib.TEXTURE_FILTER_TRILINEAR,
-        Anisotropic4x = RayLib.TEXTURE_FILTER_ANISOTROPIC_4X,
-        Anisotropic8x = RayLib.TEXTURE_FILTER_ANISOTROPIC_8X,
-        Anisotropic16x = RayLib.TEXTURE_FILTER_ANISOTROPIC_16X,
+        Point = QuotonEnum.FilterMode.Point,
+        Bilinear = QuotonEnum.FilterMode.Bilinear,
+        Trilinear = QuotonEnum.FilterMode.Trilinear,
+        Anisotropic4x = QuotonEnum.FilterMode.Anisotropic4x,
+        Anisotropic8x = QuotonEnum.FilterMode.Anisotropic8x,
+        Anisotropic16x = QuotonEnum.FilterMode.Anisotropic16x,
     },
     InputGamepad = {
         -- Placeholder for an unknown pressed gamepad button.
-        ButtonUnknown = RayLib.GAMEPAD_BUTTON_UNKNOWN,
+        ButtonUnknown = QuotonEnum.InputGamepad.ButtonUnknown,
 
-        ButtonLeftFaceUp = RayLib.GAMEPAD_BUTTON_LEFT_FACE_UP, -- On Xbox One Controllers, this is DPad Up
-        ButtonLeftFaceRight = RayLib.GAMEPAD_BUTTON_LEFT_FACE_RIGHT, -- On Xbox One Controllers, this is DPad Right
-        ButtonLeftFaceDown = RayLib.GAMEPAD_BUTTON_LEFT_FACE_DOWN, -- On Xbox One Controllers, this is DPad Down
-        ButtonLeftFaceLeft = RayLib.GAMEPAD_BUTTON_LEFT_FACE_LEFT, -- On Xbox One Controllers, this is DPad left
-        ButtonRightFaceUp = RayLib.GAMEPAD_BUTTON_RIGHT_FACE_UP, -- On Xbox One Controllers, this is Y
-        ButtonRightFaceRight = RayLib.GAMEPAD_BUTTON_RIGHT_FACE_RIGHT, -- On Xbox One Controllers, this is B
-        ButtonRightFaceDown = RayLib.GAMEPAD_BUTTON_RIGHT_FACE_DOWN, -- On Xbox One Controllers, this is A
-        ButtonRightFaceLeft = RayLib.GAMEPAD_BUTTON_RIGHT_FACE_LEFT, -- On Xbox One Controllers, this is X
-        ButtonLeftTrigger1 = RayLib.GAMEPAD_BUTTON_LEFT_TRIGGER_1, -- On Xbox One Controllers, this is LB
-        ButtonLeftTrigger2 = RayLib.GAMEPAD_BUTTON_LEFT_TRIGGER_2, -- On Xbox One Controllers, this is LT
-        ButtonRightTrigger1 = RayLib.GAMEPAD_BUTTON_RIGHT_TRIGGER_1, -- On Xbox One Controllers, this is RB
-        ButtonRightTrigger2 = RayLib.GAMEPAD_BUTTON_RIGHT_TRIGGER_2, -- On Xbox One Controllers, this is RT
-        ButtonMiddleLeft = RayLib.GAMEPAD_BUTTON_MIDDLE_LEFT, -- On Xbox One Controllers, this is Select
-        ButtonMiddle = RayLib.GAMEPAD_BUTTON_MIDDLE, -- Usually voided by the OS. Likely meant to be the Guide button.
-        ButtonMiddleRight = RayLib.GAMEPAD_BUTTON_MIDDLE_RIGHT, -- On Xbox One Controllers, this is Start
-        ButtonLeftThumb = RayLib.GAMEPAD_BUTTON_LEFT_THUMB,
-        ButtonRightThumb = RayLib.GAMEPAD_BUTTON_RIGHT_THUMB,
+        ButtonLeftFaceUp = QuotonEnum.InputGamepad.ButtonLeftFaceUp, -- On Xbox One Controllers, this is DPad Up
+        ButtonLeftFaceRight = QuotonEnum.InputGamepad.ButtonLeftFaceRight, -- On Xbox One Controllers, this is DPad Right
+        ButtonLeftFaceDown = QuotonEnum.InputGamepad.ButtonLeftFaceDown, -- On Xbox One Controllers, this is DPad Down
+        ButtonLeftFaceLeft = QuotonEnum.InputGamepad.ButtonLeftFaceLeft, -- On Xbox One Controllers, this is DPad left
+        ButtonRightFaceUp = QuotonEnum.InputGamepad.ButtonRightFaceUp, -- On Xbox One Controllers, this is Y
+        ButtonRightFaceRight = QuotonEnum.InputGamepad.ButtonRightFaceRight, -- On Xbox One Controllers, this is B
+        ButtonRightFaceDown = QuotonEnum.InputGamepad.ButtonRightFaceDown, -- On Xbox One Controllers, this is A
+        ButtonRightFaceLeft = QuotonEnum.InputGamepad.ButtonRightFaceLeft, -- On Xbox One Controllers, this is X
+        ButtonLeftTrigger1 = QuotonEnum.InputGamepad.ButtonLeftTrigger1, -- On Xbox One Controllers, this is LB
+        ButtonLeftTrigger2 = QuotonEnum.InputGamepad.ButtonLeftTrigger2, -- On Xbox One Controllers, this is LT
+        ButtonRightTrigger1 = QuotonEnum.InputGamepad.ButtonRightTrigger1, -- On Xbox One Controllers, this is RB
+        ButtonRightTrigger2 = QuotonEnum.InputGamepad.ButtonRightTrigger2, -- On Xbox One Controllers, this is RT
+        ButtonMiddleLeft = QuotonEnum.InputGamepad.ButtonMiddleLeft, -- On Xbox One Controllers, this is Select
+        ButtonMiddle = QuotonEnum.InputGamepad.ButtonMiddle, -- Usually voided by the OS. Likely meant to be the Guide button.
+        ButtonMiddleRight = QuotonEnum.InputGamepad.ButtonMiddleRight, -- On Xbox One Controllers, this is Start
+        ButtonLeftThumb = QuotonEnum.InputGamepad.ButtonLeftThumb,
+        ButtonRightThumb = QuotonEnum.InputGamepad.ButtonRightThumb,
 
-        AxisLeftX = RayLib.GAMEPAD_AXIS_LEFT_X,
-        AxisLeftY = RayLib.GAMEPAD_AXIS_LEFT_Y,
-        AxisRightX = RayLib.GAMEPAD_AXIS_RIGHT_X,
-        AxisRightY = RayLib.GAMEPAD_AXIS_RIGHT_Y,
-        AxisLeftTrigger = RayLib.GAMEPAD_AXIS_LEFT_TRIGGER,
-        AxisRightTrigger = RayLib.GAMEPAD_AXIS_RIGHT_TRIGGER,
+        AxisLeftX = QuotonEnum.InputGamepad.AxisLeftX,
+        AxisLeftY = QuotonEnum.InputGamepad.AxisLeftY,
+        AxisRightX = QuotonEnum.InputGamepad.AxisRightX,
+        AxisRightY = QuotonEnum.InputGamepad.AxisRightY,
+        AxisLeftTrigger = QuotonEnum.InputGamepad.AxisLeftTrigger,
+        AxisRightTrigger = QuotonEnum.InputGamepad.AxisRightTrigger,
     },
     InputKey = {
         -- Placeholder for an unknown pressed key.
-        Unknown = RayLib.KEY_NULL,
+        Unknown = QuotonEnum.InputKey.Unknown,
 
         -- Alphanumeric symbols
 
-        Apostrophe = RayLib.KEY_APOSTROPHE,
-        Comma = RayLib.KEY_COMMA,
-        Minus = RayLib.KEY_MINUS,
-        Period = RayLib.KEY_PERIOD,
-        Slash = RayLib.KEY_SLASH,
-        LeftBracket = RayLib.KEY_LEFT_BRACKET,
-        RightBracket = RayLib.KEY_RIGHT_BRACKET,
-        Backslash = RayLib.KEY_BACKSLASH,
-        Grave = RayLib.KEY_GRAVE,
-        Semicolon = RayLib.KEY_SEMICOLON,
-        Equal = RayLib.KEY_EQUAL,
+        Apostrophe = QuotonEnum.InputKey.Apostrophe,
+        Comma = QuotonEnum.InputKey.Comma,
+        Minus = QuotonEnum.InputKey.Minus,
+        Period = QuotonEnum.InputKey.Period,
+        Slash = QuotonEnum.InputKey.Slash,
+        LeftBracket = QuotonEnum.InputKey.LeftBracket,
+        RightBracket = QuotonEnum.InputKey.RightBracket,
+        Backslash = QuotonEnum.InputKey.Backslash,
+        Grave = QuotonEnum.InputKey.Grave,
+        Semicolon = QuotonEnum.InputKey.Semicolon,
+        Equal = QuotonEnum.InputKey.Equal,
 
         -- Alphanumeric numbers
 
-        Zero = RayLib.KEY_ZERO,
-        One = RayLib.KEY_ONE,
-        Two = RayLib.KEY_TWO,
-        Three = RayLib.KEY_THREE,
-        Four = RayLib.KEY_FOUR,
-        Five = RayLib.KEY_FIVE,
-        Six = RayLib.KEY_SIX,
-        Seven = RayLib.KEY_SEVEN,
-        Eight = RayLib.KEY_EIGHT,
-        Nine = RayLib.KEY_NINE,
+        Zero = QuotonEnum.InputKey.Zero,
+        One = QuotonEnum.InputKey.One,
+        Two = QuotonEnum.InputKey.Two,
+        Three = QuotonEnum.InputKey.Three,
+        Four = QuotonEnum.InputKey.Four,
+        Five = QuotonEnum.InputKey.Five,
+        Six = QuotonEnum.InputKey.Six,
+        Seven = QuotonEnum.InputKey.Seven,
+        Eight = QuotonEnum.InputKey.Eight,
+        Nine = QuotonEnum.InputKey.Nine,
 
         -- Alphanumeric letters
 
-        A = RayLib.KEY_A,
-        B = RayLib.KEY_B,
-        C = RayLib.KEY_C,
-        D = RayLib.KEY_D,
-        E = RayLib.KEY_E,
-        F = RayLib.KEY_F,
-        G = RayLib.KEY_G,
-        H = RayLib.KEY_H,
-        I = RayLib.KEY_I,
-        J = RayLib.KEY_J,
-        K = RayLib.KEY_K,
-        L = RayLib.KEY_L,
-        M = RayLib.KEY_M,
-        N = RayLib.KEY_N,
-        O = RayLib.KEY_O,
-        P = RayLib.KEY_P,
-        Q = RayLib.KEY_Q,
-        R = RayLib.KEY_R,
-        S = RayLib.KEY_S,
-        T = RayLib.KEY_T,
-        U = RayLib.KEY_U,
-        V = RayLib.KEY_V,
-        W = RayLib.KEY_W,
-        X = RayLib.KEY_X,
-        Y = RayLib.KEY_Y,
-        Z = RayLib.KEY_Z,
+        A = QuotonEnum.InputKey.A,
+        B = QuotonEnum.InputKey.B,
+        C = QuotonEnum.InputKey.C,
+        D = QuotonEnum.InputKey.D,
+        E = QuotonEnum.InputKey.E,
+        F = QuotonEnum.InputKey.F,
+        G = QuotonEnum.InputKey.G,
+        H = QuotonEnum.InputKey.H,
+        I = QuotonEnum.InputKey.I,
+        J = QuotonEnum.InputKey.J,
+        K = QuotonEnum.InputKey.K,
+        L = QuotonEnum.InputKey.L,
+        M = QuotonEnum.InputKey.M,
+        N = QuotonEnum.InputKey.N,
+        O = QuotonEnum.InputKey.O,
+        P = QuotonEnum.InputKey.P,
+        Q = QuotonEnum.InputKey.Q,
+        R = QuotonEnum.InputKey.R,
+        S = QuotonEnum.InputKey.S,
+        T = QuotonEnum.InputKey.T,
+        U = QuotonEnum.InputKey.U,
+        V = QuotonEnum.InputKey.V,
+        W = QuotonEnum.InputKey.W,
+        X = QuotonEnum.InputKey.X,
+        Y = QuotonEnum.InputKey.Y,
+        Z = QuotonEnum.InputKey.Z,
 
         -- Arrow keys
 
-        ArrowRight = RayLib.KEY_RIGHT,
-        ArrowLeft = RayLib.KEY_LEFT,
-        ArrowDown = RayLib.KEY_DOWN,
-        ArrowUp = RayLib.KEY_UP,
+        ArrowRight = QuotonEnum.InputKey.ArrowRight,
+        ArrowLeft = QuotonEnum.InputKey.ArrowLeft,
+        ArrowDown = QuotonEnum.InputKey.ArrowDown,
+        ArrowUp = QuotonEnum.InputKey.ArrowUp,
 
         -- Functional keys
 
-        Space = RayLib.KEY_SPACE,
-        Escape = RayLib.KEY_ESCAPE,
-        Enter = RayLib.KEY_ENTER,
-        Tab = RayLib.KEY_TAB,
-        Backspace = RayLib.KEY_BACKSPACE,
-        Insert = RayLib.KEY_INSERT,
-        Delete = RayLib.KEY_DELETE,
-        PageUp = RayLib.KEY_PAGE_UP,
-        PageDown = RayLib.KEY_PAGE_DOWN,
-        Home = RayLib.KEY_HOME,
-        End = RayLib.KEY_END,
-        CapsLock = RayLib.KEY_CAPS_LOCK,
-        ScrollLock = RayLib.KEY_SCROLL_LOCK,
-        NumLock = RayLib.KEY_NUM_LOCK,
-        PrintScreen = RayLib.KEY_PRINT_SCREEN,
-        Pause = RayLib.KEY_PAUSE,
-        LeftShift = RayLib.KEY_LEFT_SHIFT,
-        LeftControl = RayLib.KEY_LEFT_CONTROL,
-        LeftAlt = RayLib.KEY_LEFT_ALT,
-        LeftSuper = RayLib.KEY_LEFT_SUPER,
-        RightShift = RayLib.KEY_RIGHT_SHIFT,
-        RightControl = RayLib.KEY_RIGHT_CONTROL,
-        RightAlt = RayLib.KEY_RIGHT_ALT,
-        RightSuper = RayLib.KEY_RIGHT_SUPER,
+        Space = QuotonEnum.InputKey.Space,
+        Escape = QuotonEnum.InputKey.Escape,
+        Enter = QuotonEnum.InputKey.Enter,
+        Tab = QuotonEnum.InputKey.Tab,
+        Backspace = QuotonEnum.InputKey.Backspace,
+        Insert = QuotonEnum.InputKey.Insert,
+        Delete = QuotonEnum.InputKey.Delete,
+        PageUp = QuotonEnum.InputKey.PageUp,
+        PageDown = QuotonEnum.InputKey.PageDown,
+        Home = QuotonEnum.InputKey.Home,
+        End = QuotonEnum.InputKey.End,
+        CapsLock = QuotonEnum.InputKey.CapsLock,
+        ScrollLock = QuotonEnum.InputKey.ScrollLock,
+        NumLock = QuotonEnum.InputKey.NumLock,
+        PrintScreen = QuotonEnum.InputKey.PrintScreen,
+        Pause = QuotonEnum.InputKey.Pause,
+        LeftShift = QuotonEnum.InputKey.LeftShift,
+        LeftControl = QuotonEnum.InputKey.LeftControl,
+        LeftAlt = QuotonEnum.InputKey.LeftAlt,
+        LeftSuper = QuotonEnum.InputKey.LeftSuper,
+        RightShift = QuotonEnum.InputKey.RightShift,
+        RightControl = QuotonEnum.InputKey.RightControl,
+        RightAlt = QuotonEnum.InputKey.RightAlt,
+        RightSuper = QuotonEnum.InputKey.RightSuper,
 
-        F1 = RayLib.KEY_F1,
-        F2 = RayLib.KEY_F2,
-        F3 = RayLib.KEY_F3,
-        F4 = RayLib.KEY_F4,
-        F5 = RayLib.KEY_F5,
-        F6 = RayLib.KEY_F6,
-        F7 = RayLib.KEY_F7,
-        F8 = RayLib.KEY_F8,
-        F9 = RayLib.KEY_F9,
-        F10 = RayLib.KEY_F10,
-        F11 = RayLib.KEY_F11,
-        F12 = RayLib.KEY_F12,
+        F1 = QuotonEnum.InputKey.F1,
+        F2 = QuotonEnum.InputKey.F2,
+        F3 = QuotonEnum.InputKey.F3,
+        F4 = QuotonEnum.InputKey.F4,
+        F5 = QuotonEnum.InputKey.F5,
+        F6 = QuotonEnum.InputKey.F6,
+        F7 = QuotonEnum.InputKey.F7,
+        F8 = QuotonEnum.InputKey.F8,
+        F9 = QuotonEnum.InputKey.F9,
+        F10 = QuotonEnum.InputKey.F10,
+        F11 = QuotonEnum.InputKey.F11,
+        F12 = QuotonEnum.InputKey.F12,
 
         -- Keypad keys
 
-        KeypadZero = RayLib.KEY_KP_0,
-        KeypadOne = RayLib.KEY_KP_1,
-        KeypadTwo = RayLib.KEY_KP_2,
-        KeypadThree = RayLib.KEY_KP_3,
-        KeypadFour = RayLib.KEY_KP_4,
-        KeypadFive = RayLib.KEY_KP_5,
-        KeypadSix = RayLib.KEY_KP_6,
-        KeypadSeven = RayLib.KEY_KP_7,
-        KeypadEight = RayLib.KEY_KP_8,
-        KeypadNine = RayLib.KEY_KP_9,
-        KeypadMenu = RayLib.KEY_KB_MENU,
-        KeypadDecimal = RayLib.KEY_KP_DECIMAL,
-        KeypadDivide = RayLib.KEY_KP_DIVIDE,
-        KeypadMultiply = RayLib.KEY_KP_MULTIPLY,
-        KeypadSubtract = RayLib.KEY_KP_SUBTRACT,
-        KeypadAdd = RayLib.KEY_KP_ADD,
-        KeypadEnter = RayLib.KEY_KP_ENTER,
-        KeypadEqual = RayLib.KEY_KP_EQUAL,
+        KeypadZero = QuotonEnum.InputKey.KeypadZero,
+        KeypadOne = QuotonEnum.InputKey.KeypadOne,
+        KeypadTwo = QuotonEnum.InputKey.KeypadTwo,
+        KeypadThree = QuotonEnum.InputKey.KeypadThree,
+        KeypadFour = QuotonEnum.InputKey.KeypadFour,
+        KeypadFive = QuotonEnum.InputKey.KeypadFive,
+        KeypadSix = QuotonEnum.InputKey.KeypadSix,
+        KeypadSeven = QuotonEnum.InputKey.KeypadSeven,
+        KeypadEight = QuotonEnum.InputKey.KeypadEight,
+        KeypadNine = QuotonEnum.InputKey.KeypadNine,
+        KeypadMenu = QuotonEnum.InputKey.KeypadMenu,
+        KeypadDecimal = QuotonEnum.InputKey.KeypadDecimal,
+        KeypadDivide = QuotonEnum.InputKey.KeypadDivide,
+        KeypadMultiply = QuotonEnum.InputKey.KeypadMultiply,
+        KeypadSubtract = QuotonEnum.InputKey.KeypadSubtract,
+        KeypadAdd = QuotonEnum.InputKey.KeypadAdd,
+        KeypadEnter = QuotonEnum.InputKey.KeypadEnter,
+        KeypadEqual = QuotonEnum.InputKey.KeypadEqual,
 
         -- Mobile menu keys
 
-        MobileBack = RayLib.KEY_BACK,
-        MobileMenu = RayLib.KEY_MENU,
-        MobileVolumeUp = RayLib.KEY_VOLUME_UP,
-        MobileVolumeDown = RayLib.KEY_VOLUME_DOWN,
+        MobileBack = QuotonEnum.InputKey.MobileBack,
+        MobileMenu = QuotonEnum.InputKey.MobileMenu,
+        MobileVolumeUp = QuotonEnum.InputKey.MobileVolumeUp,
+        MobileVolumeDown = QuotonEnum.InputKey.MobileVolumeDown,
     },
     InputMouse = {
-        Left = RayLib.MOUSE_BUTTON_LEFT,
-        Right = RayLib.MOUSE_BUTTON_RIGHT,
-        Middle = RayLib.MOUSE_BUTTON_MIDDLE,
+        Left = QuotonEnum.InputMouse.Left,
+        Right = QuotonEnum.InputMouse.Right,
+        Middle = QuotonEnum.InputMouse.Middle,
 
         -- Only present on certain mice. Not recommended to use as default controls. Can be the side-button for "Down" on some mice.
-        Side = RayLib.MOUSE_BUTTON_SIDE,
+        Side = QuotonEnum.InputMouse.Side,
 
         -- Only present on certain mice. Not recommended to use as default controls. Can be the side-button for "Up" on some mice.
-        Extra = RayLib.MOUSE_BUTTON_EXTRA,
+        Extra = QuotonEnum.InputMouse.Extra,
 
         -- Only present on certain mice. Not recommended to use as default controls.
-        Forward = RayLib.MOUSE_BUTTON_FORWARD,
+        Forward = QuotonEnum.InputMouse.Forward,
 
         -- Only present on certain mice. Not recommended to use as default controls.
-        Back = RayLib.MOUSE_BUTTON_BACK,
+        Back = QuotonEnum.InputMouse.Back,
     },
     OpenFileMode = {
         Buffer = "buffer",
         Text = "text",
     },
     TraceLogLevel = {
-        All = RayLib.LOG_ALL,
-        Trace = RayLib.LOG_TRACE,
-        Debug = RayLib.LOG_DEBUG,
-        Info = RayLib.LOG_INFO,
-        Warning = RayLib.LOG_WARNING,
-        Error = RayLib.LOG_ERROR,
-        Fatal = RayLib.LOG_FATAL,
-        None = RayLib.LOG_NONE,
+        All = QuotonEnum.TraceLogLevel.All,
+        Trace = QuotonEnum.TraceLogLevel.Trace,
+        Debug = QuotonEnum.TraceLogLevel.Debug,
+        Info = QuotonEnum.TraceLogLevel.Info,
+        Warning = QuotonEnum.TraceLogLevel.Warning,
+        Error = QuotonEnum.TraceLogLevel.Error,
+        Fatal = QuotonEnum.TraceLogLevel.Fatal,
+        None = QuotonEnum.TraceLogLevel.None,
     },
     WrapMode = {
-        Repeat = RayLib.TEXTURE_WRAP_REPEAT,
-        Clamp = RayLib.TEXTURE_WRAP_CLAMP,
-        RepeatMirror = RayLib.TEXTURE_WRAP_MIRROR_REPEAT,
-        ClampMirror = RayLib.TEXTURE_WRAP_MIRROR_CLAMP,
+        Repeat = QuotonEnum.WrapMode.Repeat,
+        Clamp = QuotonEnum.WrapMode.Clamp,
+        RepeatMirror = QuotonEnum.WrapMode.RepeatMirror,
+        ClampMirror = QuotonEnum.WrapMode.ClampMirror,
     },
 }
 

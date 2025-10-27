@@ -6,14 +6,14 @@ local RayLib = QuotonLibrary -- TODO: Replace this
 local libset = require("src.modules.libset")
 
 local module = {
-    RandomInitializeData = {
-        final = 0,
-        amount = 0
-    },
-
     MaxFrameRate = 60, -- this can change with no issues
     RuntimeFrameRate = 60, -- this should NOT change and will cause issues if changed
 
+    ---@private
+    _randomInitializeData = {
+        final = 0,
+        amount = 0
+    },
     ---@private
     _flags = {
         newMaxFps = 60,

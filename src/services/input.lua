@@ -4,19 +4,18 @@ local Rectangle = require("src.engine.quoton-rectangle")
 local RenderingService = require("src.services.rendering")
 local RuntimeService = require("src.services.runtime")
 
-local RayLib = QuotonLibrary -- TODO: replace this
-
 local libset = require("src.modules.libset")
+local Environment = require("src.modules.env")
 local Enum = require("src.modules.enum")
 
-local module = {}
+local InputService = {}
 
 ---@private
-module._ready = false
+InputService._ready = false
 ---@private
-module._correctGamepadAxis = false
+InputService._correctGamepadAxis = false
 ---@private
-module._screenLocation = {
+InputService._screenLocation = {
     x = 0,
     y = 0,
     width = 1280,
@@ -25,7 +24,7 @@ module._screenLocation = {
 
 -- Lists
 -- Keys
-function module:Key(key)
+function InputService:Key(key)
     if key == "'" then return Enum.InputKey.Apostrophe end
     if key == "," then return Enum.InputKey.Comma end
     if key == "-" then return Enum.InputKey.Minus end
@@ -81,7 +80,7 @@ function module:Key(key)
     return Enum.InputKey.Unknown
 end
 -- Keypad
-function module:Keypad(key)
+function InputService:Keypad(key)
     if key == "0" then return Enum.InputKey.KeypadZero end
     if key == "1" then return Enum.InputKey.KeypadOne end
     if key == "2" then return Enum.InputKey.KeypadTwo end
@@ -105,56 +104,74 @@ end
 
 -- Inputs
 -- Generic (no devices)
-function module:GetBounds()
-    local loc = module._screenLocation
+function InputService:GetBounds()
+    local loc = InputService._screenLocation
     return Rectangle.New(loc.x, loc.y, loc.width, loc.height)
 end
 
 -- Mouse
-function module:GetMouseX() -- Return the X position of the mouse cursor.
-    if not self._ready then return 0 end
-    local w = self._screenLocation.width
-    local x = RayLib.GetMouseX() - self._screenLocation.x
-    return ((x / w) * RenderingService._renderSettings.ResolutionX)
+if Environment.Library == "raylib-tsnake41" then
+    local RayLib = QuotonLibrary
+    function InputService:GetMouseX() -- Return the X position of the mouse cursor.
+        if not self._ready then return 0 end
+        local w = self._screenLocation.width
+        local x = RayLib.GetMouseX() - self._screenLocation.x
+        return ((x / w) * RenderingService._renderSettings.ResolutionX)
+    end
+    function InputService:GetMouseY() -- Return the Y position of the mouse cursor.
+        if not self._ready then return 0 end
+        local h = self._screenLocation.height
+        local y = RayLib.GetMouseY() - self._screenLocation.y
+        return ((y / h) * RenderingService._renderSettings.ResolutionY)
+    end
+    function InputService:IsMouseButtonDown(button) -- Check if the mouse button is being pressed down
+        return RayLib.IsMouseButtonDown(button)
+    end
+    function InputService:IsMouseButtonUp(button) -- Check if the mouse button is not being pressed down
+        return RayLib.IsMouseButtonUp(button)
+    end
+    function InputService:IsMouseButtonPressed(button) -- Check if (on this frame) the mouse button was pressed
+        return RayLib.IsMouseButtonPressed(button)
+    end
+    function InputService:IsMouseButtonReleased(button) -- Check if (on this frame) the mouse button was released
+        return RayLib.IsMouseButtonReleased(button)
+    end
 end
-function module:GetMouseY() -- Return the Y position of the mouse cursor.
-    if not self._ready then return 0 end
-    local h = self._screenLocation.height
-    local y = RayLib.GetMouseY() - self._screenLocation.y
-    return ((y / h) * RenderingService._renderSettings.ResolutionY)
-end
-function module:MouseWithin(rect)
+function InputService:MouseWithin(rect)
     if not self._ready then return false end
     local x = self:GetMouseX()
     local y = self:GetMouseY()
-    local isMouseXInside = (x >= rect.x) and (x <= (rect.x + rect.width))
-    local isMouseYInside = (y >= rect.y) and (y <= (rect.y + rect.height))
+    local isMouseXInside = (x >= rect.X) and (x <= (rect.X + rect.Width))
+    local isMouseYInside = (y >= rect.Y) and (y <= (rect.Y + rect.Height))
     return isMouseXInside and isMouseYInside
 end
 
 -- Keyboard
-module._typedKeycodes = {} ---@private
-module._typedUnicodes = {} ---@private
-function module:IsKeyDown(inputKey) -- Check if the inputKey is being pressed down
-    return RayLib.IsKeyDown(inputKey)
+InputService._typedKeycodes = {} ---@private
+InputService._typedUnicodes = {} ---@private
+if Environment.Library == "raylib-tsnake41" then
+    local RayLib = QuotonLibrary
+    function InputService:IsKeyDown(inputKey) -- Check if the inputKey is being pressed down
+        return RayLib.IsKeyDown(inputKey)
+    end
+    function InputService:IsKeyUp(inputKey) -- Check if the inputKey is not being pressed down
+        return RayLib.IsKeyUp(inputKey)
+    end
+    function InputService:IsKeyPressed(inputKey) -- Check if (on this frame) the inputKey was pressed
+        return RayLib.IsKeyPressed(inputKey)
+    end
+    function InputService:IsKeyReleased(inputKey) -- Check if (on this frame) the inputKey was released
+        return RayLib.IsKeyReleased(inputKey)
+    end
 end
-function module:IsKeyUp(inputKey) -- Check if the inputKey is not being pressed down
-    return RayLib.IsKeyUp(inputKey)
+function InputService:GetPressedInputKeys() -- Returns a table of keycodes, which can be compared against Enum.InputKey
+    return self._typedKeycodes
 end
-function module:IsKeyPressed(inputKey) -- Check if (on this frame) the inputKey was pressed
-    return RayLib.IsKeyPressed(inputKey)
+function InputService:GetTypedUnicodes() -- Returns a table of Unicode numbers representing the keys pressed. On some devices, holding a key down will cause it to repeatedly be typed. This function will also get keys typed from said behavior.
+    return self._typedUnicodes
 end
-function module:IsKeyReleased(inputKey) -- Check if (on this frame) the inputKey was released
-    return RayLib.IsKeyReleased(inputKey)
-end
-function module:GetPressedInputKeys() -- Returns a table of keycodes, which can be compared against Enum.InputKey
-    return module._typedKeycodes
-end
-function module:GetTypedUnicodes() -- Returns a table of Unicode numbers representing the keys pressed. On some devices, holding a key down will cause it to repeatedly be typed. This function will also get keys typed from said behavior.
-    return module._typedUnicodes
-end
-function module:GetTypedCharacters() -- Converts the Unicode number table from GetTypedUnicodes into a table of the typed characters
-    return libset.table.map(module._typedUnicodes, function(byte)
+function InputService:GetTypedCharacters() -- Converts the Unicode number table from GetTypedUnicodes into a table of the typed characters
+    return libset.table.map(self._typedUnicodes, function(byte)
         local char = ""
         pcall(function()
             char = string.char(byte)
@@ -163,26 +180,30 @@ function module:GetTypedCharacters() -- Converts the Unicode number table from G
     end)
 end
 
-RuntimeService.OnPreStep:Connect(function()
-    if not module._ready then return end
+-- Make the loop for GetPressedInputKeys and GetTypedUnicodes
+if Environment.Library == "raylib-tsnake41" then
+    local RayLib = QuotonLibrary
+    RuntimeService.OnPreStep:Connect(function()
+        if not InputService._ready then return end
 
-    -- reset tables
-    module._typedKeycodes = {}
-    module._typedUnicodes = {}
+        -- reset tables
+        InputService._typedKeycodes = {}
+        InputService._typedUnicodes = {}
 
-    -- GetKeyPressed loop
-    local currentKeycode = RayLib.GetKeyPressed()
-    while currentKeycode ~= 0 do
-        table.insert(module._typedKeycodes, currentKeycode)
-        currentKeycode = RayLib.GetKeyPressed()
-    end
+        -- GetKeyPressed loop
+        local currentKeycode = RayLib.GetKeyPressed()
+        while currentKeycode ~= 0 do
+            table.insert(InputService._typedKeycodes, currentKeycode)
+            currentKeycode = RayLib.GetKeyPressed()
+        end
 
-    -- GetCharPressed loop
-    local currentUnicode = RayLib.GetCharPressed()
-    while currentUnicode ~= 0 do
-        table.insert(module._typedUnicodes, currentUnicode)
-        currentUnicode = RayLib.GetCharPressed()
-    end
-end)
+        -- GetCharPressed loop
+        local currentUnicode = RayLib.GetCharPressed()
+        while currentUnicode ~= 0 do
+            table.insert(InputService._typedUnicodes, currentUnicode)
+            currentUnicode = RayLib.GetCharPressed()
+        end
+    end)
+end
 
-return module
+return InputService

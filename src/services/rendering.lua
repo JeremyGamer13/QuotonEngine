@@ -1,6 +1,6 @@
 local QuotonLibrary = require("src.engine.quoton-library")
-local Vector2 = require("src.engine.quoton-vector2")
 local Rectangle = require("src.engine.quoton-rectangle")
+local Vector2 = require("src.engine.quoton-vector2")
 
 local Enum = require("src.modules.enum")
 local Environment = require("src.modules.env")
@@ -109,6 +109,8 @@ function RenderingService:SetTint(color)
     self._renderSettings.ScreenTint = color
 end
 
+-- Window
+
 function RenderingService:GetWindowBounds()
     if Environment.Library == "raylib-tsnake41" then
         local RayLib = QuotonLibrary
@@ -116,6 +118,75 @@ function RenderingService:GetWindowBounds()
         return Rectangle.New(windowPosition.x, windowPosition.y, RayLib.GetScreenWidth(), RayLib.GetScreenHeight())
     else
         error("RenderingService:GetWindowBounds for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+function RenderingService:GetWindowDPIScale()
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        local scale = RayLib.GetWindowScaleDPI()
+        return Vector2.New(scale.x, scale.y)
+    else
+        error("RenderingService:GetWindowDPIScale for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+
+function RenderingService:SetWindowPosition(x, y)
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        RayLib.SetWindowPosition(x, y)
+    else
+        error("RenderingService:SetWindowPosition for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+function RenderingService:SetWindowSize(width, height)
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        RayLib.SetWindowSize(width, height)
+    else
+        error("RenderingService:SetWindowSize for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+function RenderingService:MaximizeWindow()
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        RayLib.MaximizeWindow()
+    else
+        error("RenderingService:MaximizeWindow for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+function RenderingService:MinimizeWindow()
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        RayLib.MinimizeWindow()
+    else
+        error("RenderingService:MinimizeWindow for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+
+-- Monitor
+
+function RenderingService:GetCurrentMonitor()
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        return RayLib.GetCurrentMonitor()
+    else
+        error("RenderingService:GetCurrentMonitor for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+function RenderingService:GetMonitorCount()
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        return RayLib.GetMonitorCount()
+    else
+        error("RenderingService:GetMonitorCount for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+function RenderingService:GetMonitorRefreshRate(monitor)
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        return RayLib.GetMonitorRefreshRate(monitor)
+    else
+        error("RenderingService:GetMonitorRefreshRate for Library " .. tostring(Environment.Library) .. " not implemented")
     end
 end
 function RenderingService:GetMonitorBounds(monitor)
@@ -126,6 +197,41 @@ function RenderingService:GetMonitorBounds(monitor)
     else
         error("RenderingService:GetMonitorBounds for Library " .. tostring(Environment.Library) .. " not implemented")
     end
+end
+
+-- Shapes
+-- Rectangles
+
+-- Draws a rectangle with a specific color using the given rectangle as bounds.
+function RenderingService:DrawRectangle(rect, color)
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        RayLib.DrawRectangleRec(rect, color)
+    else
+        error("RenderingService:DrawRectangle for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+-- Same as DrawRectangle but you need to provide each parameter of the rectangle individually.
+function RenderingService:DrawRectangleLong(x, y, width, height, color)
+    local rect = Rectangle.New(x, y, width, height)
+    self:DrawRectangle(rect, color)
+end
+
+-- Circles
+
+-- Draws a circle with a specific color using the provided vector as the center point.
+function RenderingService:DrawCircle(center, radius, color)
+    if Environment.Library == "raylib-tsnake41" then
+        local RayLib = QuotonLibrary
+        RayLib.DrawCircleV(center, radius, color)
+    else
+        error("RenderingService:DrawCircle for Library " .. tostring(Environment.Library) .. " not implemented")
+    end
+end
+-- Same as DrawCircle but you need to provide each parameter of the vector individually.
+function RenderingService:DrawCircleLong(x, y, radius, color)
+    local vector = Vector2.New(x, y)
+    self:DrawCircle(vector, radius, color)
 end
 
 function RenderingService:DrawText(font, text, x, y, color, size, hAlign, vAlign)

@@ -1,4 +1,6 @@
 local Quoton = require("src.engine.quoton")
+local Vector2 = require("src.engine.quoton-vector2")
+local Rectangle = require("src.engine.quoton-rectangle")
 
 local TransmitterService = require("src.services.transmitter")
 local RenderingService = require("src.services.rendering")
@@ -25,57 +27,53 @@ RenderingService:SetResolution(
 )
 -- setup the game engine
 Quoton:Initialize(SetupConfig.WindowConfigFlags, SetupConfig)
-Quoton:SetTargetFPS(SetupConfig.FrameRateMax)
+Quoton:SetTargetFPS(SetupConfig.FrameRateMax) -- TODO: Shouldnt this be part of RuntimeService?
 -- TODO: Implement ExitKey stuff for Quoton here
 
 if SetupConfig.WindowScreenResize then
     local screenResolution = RenderingService:GetScreenResolution()
     local appropriateWindowRes = RenderingService:GetAppropriateResolution(not SetupConfig.WindowScreenResizeFill)
-    RayLib.SetWindowSize(appropriateWindowRes.width, appropriateWindowRes.height)
-    RayLib.SetWindowPosition(
-        (screenResolution.width / 2) - (appropriateWindowRes.width / 2),
-        (screenResolution.height / 2) - (appropriateWindowRes.height / 2)
+    RenderingService:SetWindowSize(appropriateWindowRes.Width, appropriateWindowRes.Height)
+    RenderingService:SetWindowPosition(
+        (screenResolution.width / 2) - (appropriateWindowRes.Width / 2),
+        (screenResolution.height / 2) - (appropriateWindowRes.Height / 2)
     )
 
     if SetupConfig.WindowScreenResizeResolution then
         local appropriateRes = RenderingService:GetAppropriateResolution()
-        RenderingService:SetResolution(appropriateRes.width, appropriateRes.height)
+        RenderingService:SetResolution(appropriateRes.Width, appropriateRes.Height)
     end
 end
 if SetupConfig.WindowMaximize then
-    RayLib.MaximizeWindow()
+    RenderingService:MaximizeWindow()
 end
 
 -- this makes math.random a bit better at being random
 -- also introduces the silly thing of RNG manipulation!
 if SetupConfig.EnableRandomRNG then
-    print("Creating random numbers...")
-
     local randomRepeats = math.ceil((os.time() % 500) + (os.clock() % 500))
     local randomValue = 0
     for _ = 1, randomRepeats do
         randomValue = math.random(1, 512)
     end
-    RuntimeService.RandomInitializeData = {
+    RuntimeService._randomInitializeData = {
         final = randomValue,
         amount = randomRepeats
     }
-
-    print("Finished creating random numbers")
 end
 
 -- setup audio
-RayLib.InitAudioDevice()
+Quoton:InitializeAudio()
 AudioService.forceCompatibility = SetupConfig.EnableCompatibleAudio
 AudioService:SetMasterVolume(SetupConfig.AudioVolume)
 
 -- load fonts & allow input service to begin
 FontService.PrimaryFont = SetupConfig.FontPrimary
 FontService:Load(SetupConfig.FontList)
-
 InputService._ready = true
 
-local RenderTexture = RayLib.LoadRenderTexture(
+local RayLib = require("src.engine.quoton-library") -- TODO: Remove this
+local RenderTexture = RayLib.LoadRenderTexture( -- TODO: RenderingService should be able to make it's own RenderTextures and have the user swap the target one.
     RenderingService._renderSettings.ResolutionX,
     RenderingService._renderSettings.ResolutionY
 )
@@ -161,9 +159,9 @@ while (not RayLib.WindowShouldClose()) and (not ForceWindowClose) do
     -- crop is negative height so the texture is flipped before rendering
     -- apparently something to do with opengl(?) coordinates starting at the bottom
     local renderTexConfig = {
-        crop = RayLua.Rectangle(0, 0, RenderingService._renderSettings.ResolutionX, 0 - RenderingService._renderSettings.ResolutionY),
-        destination = RayLua.Rectangle(renderDestination.x, renderDestination.y, renderDestination.width, renderDestination.height),
-        position = RayLua.Vector2(0, 0),
+        crop = Rectangle.New(0, 0, RenderingService._renderSettings.ResolutionX, 0 - RenderingService._renderSettings.ResolutionY),
+        destination = Rectangle.New(renderDestination.x, renderDestination.y, renderDestination.width, renderDestination.height),
+        position = Vector2.New(0, 0),
     }
     RayLib.DrawTexturePro(
         RenderTexture.texture,
