@@ -26,4 +26,11 @@ Environment.Platform = "windowsbundle"
 -- `raylib-tsnake41` means this application was built to use the raylib-lua bindings by TSnake41 on GitHub.
 Environment.Library = "raylib-tsnake41"
 
+---@type "raylib-tsnake41"
+-- Allows you to use a different library for handling audio. Some platforms or libraries support using different audio handlers.
+-- Currently only `raylib-tsnake41` is valid.
+--
+-- `raylib-tsnake41` means this application was built to use the raylib-lua bindings by TSnake41 on GitHub.
+Environment.LibraryAudio = "raylib-tsnake41"
+
 return Environment
