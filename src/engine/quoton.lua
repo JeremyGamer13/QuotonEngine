@@ -27,15 +27,6 @@ function Quoton:Initialize(configFlags, configuration)
         error("Quoton:Initialize for Library " .. tostring(Environment.Library) .. " not implemented")
     end
 end
--- Initializes the audio handler. Only meant to be used by the game engine.
-function Quoton:InitializeAudio()
-    if Environment.Library == "raylib-tsnake41" then
-        local RayLib = QuotonLibrary
-        RayLib.InitAudioDevice()
-    else
-        error("Quoton:InitializeAudio for Library " .. tostring(Environment.Library) .. " not implemented")
-    end
-end
 -- Unloads the engine. Only meant to be used by the game engine.
 function Quoton:UnloadEngine()
     if Environment.Library == "raylib-tsnake41" then

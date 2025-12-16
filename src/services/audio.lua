@@ -6,37 +6,48 @@ local RuntimeService = require("src.services.runtime")
 -- TODO: replace this
 local RayLib = QuotonLibrary
 local libset = require("src.modules.libset")
+local Environment = require("src.modules.env")
 local Enum = require("src.modules.enum")
 
 -- (Temporary)
 ---@diagnostic disable: deprecated
 
-local module = {
-    -- Setup script should set this to true if needed
-    forceCompatibility = false,
-
+local AudioService = {
     ---@private
     _audio = {},
 }
-
-function module:SetMasterVolume(volume)
-    RayLib.SetMasterVolume(volume)
-end
-function module:GetMasterVolume()
-    return RayLib.GetMasterVolume()
-end
-
-function module:SetDefaultAudioStreamBufferSize(size)
-    return RayLib.SetAudioStreamBufferSizeDefault(size)
+-- Initialize
+if Environment.LibraryAudio == "raylib-tsnake41" then
+    local RayLib = QuotonLibrary
+    ---@private
+    function AudioService:Initialize()
+        RayLib.InitAudioDevice()
+        RayLib.SetAudioStreamBufferSizeDefault(4096)
+    end
 end
 
-local function CreateAudioGroupObject(optName)
+-- Master Volume
+if Environment.LibraryAudio == "raylib-tsnake41" then
+    local RayLib = QuotonLibrary
+    -- Sets the volume for the whole application.
+    function AudioService:SetMasterVolume(volume)
+        RayLib.SetMasterVolume(volume)
+    end
+    -- Get the master volume for the whole application.
+    function AudioService:GetMasterVolume()
+        return RayLib.GetMasterVolume()
+    end
+end
+
+local function CreateAudioGroupObject(name)
+    libset.logic.assert(not not name, "Cannot create an AudioGroup with no name")
+
     ---@class AudioGroup
     local AudioGroup = {
         _childGroups = {},
     }
 
-    AudioGroup.Name = optName or ""
+    AudioGroup.Name = name
     AudioGroup.Volume = 1
     AudioGroup.VolumeChanged = EventService:CreateEvent("VolumeChanged")
 
@@ -60,6 +71,7 @@ local function CreateAudioGroupObject(optName)
         self:RecurseUpdates()
     end
     function AudioGroup:SetGroup(group)
+        -- If 
         if self.Group then
             local idx = libset.table.find(group._childGroups, self)
             if idx then
@@ -91,7 +103,7 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
     local Audio = {}
 
     -- Music streams have a lot of stuttering problems at low FPS, even if they allow for some nice options.
-    if module.forceCompatibility and type == Enum.AudioType.Music then
+    if AudioService.forceCompatibility and type == Enum.AudioType.Music then
         type = Enum.AudioType.Sound
     end
 
@@ -297,12 +309,16 @@ local function CreateAudioObject(filePath, type, rawSampleRate, rawSampleSize, r
     return Audio
 end
 
-function module:New(filepath, type)
+function AudioService:NewGroup(name)
+    local audioGroup = CreateAudioGroupObject(name)
+    return audioGroup
+end
+function AudioService:NewSource(filepath, type)
     local audio = CreateAudioObject(filepath, type)
     table.insert(self._audio, audio)
     return audio
 end
-function module:NewRaw(sampleRate, sampleSize, channels)
+function AudioService:NewRaw(sampleRate, sampleSize, channels)
     local audio = CreateAudioObject(
         nil,
         Enum.AudioType.Raw,
@@ -313,21 +329,16 @@ function module:NewRaw(sampleRate, sampleSize, channels)
     table.insert(self._audio, audio)
     return audio
 end
-function module:NewGroup(optName)
-    local audioGroup = CreateAudioGroupObject(optName)
-    return audioGroup
-end
 
-function module:UnloadAudio()
+function AudioService:UnloadCreatedAudio()
     print("Unloading Audio")
     for _, audio in pairs(self._audio) do
         audio:Unload()
     end
 end
-
 ---@private
-function module:Unload()
-    module:UnloadAudio()
+function AudioService:Unload()
+    AudioService:UnloadAudio()
 end
 
-return module
+return AudioService

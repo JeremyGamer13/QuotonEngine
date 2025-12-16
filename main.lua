@@ -64,8 +64,7 @@ if SetupConfig.EnableRandomRNG then
 end
 
 -- setup audio
-Quoton:InitializeAudio()
-AudioService.forceCompatibility = SetupConfig.EnableCompatibleAudio
+AudioService:Initialize()
 AudioService:SetMasterVolume(SetupConfig.AudioVolume)
 
 -- load fonts & allow input service to begin

@@ -287,5 +287,10 @@ module.logic.test = function(condition, a, b)
 		return b
 	end
 end
+module.logic.assert = function(condition, err)
+	if not condition then
+		error(err)
+	end
+end
 
 return module
