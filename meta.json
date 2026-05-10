@@ -1,4 +1,15 @@
 {
-    "_note": "Meant for Quoton App to read",
-    "appShouldHandleLike": "0"
+    "version": "development",
+    "schema": "0",
+    "defaults": "defaults",
+    "download-ignore": [
+        "assets",
+        "docs",
+        "CONTRIBUTING.md",
+        "README.md",
+        "TODO.md",
+        "src/scripts",
+        "src/tests",
+        "src/setup.lua"
+    ]
 }
