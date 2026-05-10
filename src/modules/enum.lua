@@ -1,5 +1,5 @@
 local QuotonEnum = require("src.engine.quoton-enum")
-local Color = require("src.engine.quoton-color")
+local Color = require("src.engine.classes.color")
 
 ---@enum Enum
 -- Enums represent values that may be commonly used in Quoton. You are intended to use these as inputs to other functions, for example.

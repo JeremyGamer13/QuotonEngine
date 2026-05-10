@@ -1,6 +1,6 @@
 local Quoton = require("src.engine.quoton")
-local Vector2 = require("src.engine.quoton-vector2")
-local Rectangle = require("src.engine.quoton-rectangle")
+local Vector2 = require("src.engine.classes.vector2")
+local Rectangle = require("src.engine.classes.rectangle")
 
 local TransmitterService = require("src.services.transmitter")
 local RenderingService = require("src.services.rendering")

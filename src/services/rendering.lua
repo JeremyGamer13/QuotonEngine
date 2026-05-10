@@ -1,6 +1,6 @@
 local QuotonLibrary = require("src.engine.quoton-library")
-local Rectangle = require("src.engine.quoton-rectangle")
-local Vector2 = require("src.engine.quoton-vector2")
+local Rectangle = require("src.engine.classes.rectangle")
+local Vector2 = require("src.engine.classes.vector2")
 
 local Enum = require("src.modules.enum")
 local Environment = require("src.modules.env")

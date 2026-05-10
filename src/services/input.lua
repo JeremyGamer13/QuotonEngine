@@ -1,5 +1,5 @@
 local QuotonLibrary = require("src.engine.quoton-library")
-local Rectangle = require("src.engine.quoton-rectangle")
+local Rectangle = require("src.engine.classes.rectangle")
 
 local RenderingService = require("src.services.rendering")
 local RuntimeService = require("src.services.runtime")

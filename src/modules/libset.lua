@@ -1,6 +1,7 @@
 local Environment = require("src.modules.env")
 
 -- libset is a generic library I made that adds JS-like functions into Lua.
+-- It's generally intended to be a standard library of functions for use.
 -- Full name is LibrarySet but recommended to shorten to libset.
 local module = {}
 
