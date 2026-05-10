@@ -1,15 +1,12 @@
 -- THIS IS A CORE SCRIPT, You can edit the script and behavior of the functions, but DO NOT DELETE THE SCRIPT, OR IT'S FUNCTIONS!
 -- Also make sure that all functions originally here return the same expected values.
-local SetupService = require("src.services.setup")
-
-local Enum = require("src.modules.enum")
-
 local module = {}
 
 -- Returns an array of require()'d scripts. Will be sent to the setup service.
 function module:ImportGameScripts()
+    -- Add your own scripts here...
     return {
-        require("src.scripts.tests.test"),
+        require("src.scripts.main"),
     }
 end
 
@@ -41,7 +38,7 @@ function module:InitializingPreProgram()
         EnableCompatibleAudio = true,
 
         -- Sets the available fonts that can be used in-game. Should be a path to the fonts.
-        FontList = {"assets/fonts/NotoSans.ttf"},
+        FontList = { "assets/fonts/NotoSans.ttf" },
 
         -- Sets the default primary font used by FontService. Can be changed later if neccessary.
         FontPrimary = "NotoSans",
@@ -56,7 +53,7 @@ function module:InitializingPreProgram()
         FrameRateMax = 60,
 
         --[[
-            The current raylib-lua bindings used in Quoton seem to have the gamepad axis indexes off by one.
+            raylib-tsnake41 raylib-lua bindings seem to have the gamepad axis indexes off by one.
             Enabling this fix will offset the index.
             This is enabled by default.
         ]]
